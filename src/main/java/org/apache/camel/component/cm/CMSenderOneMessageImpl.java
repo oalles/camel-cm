@@ -20,8 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import net.freeutils.charset.CCGSMCharset;
-
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.cm.client.SMSResponse;
 import org.apache.camel.component.cm.exceptions.MessagingException;
@@ -42,10 +40,11 @@ import org.w3c.dom.Text;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
+import net.freeutils.charset.CCGSMCharset;
+
 public class CMSenderOneMessageImpl implements CMSender {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(CMSenderOneMessageImpl.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CMSenderOneMessageImpl.class);
 
 	private String url;
 	private UUID productToken;
@@ -54,8 +53,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
 	private PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
 
-	public CMSenderOneMessageImpl(String url, UUID productToken,
-			int defaultMaxNumberOfParts) {
+	public CMSenderOneMessageImpl(String url, UUID productToken, int defaultMaxNumberOfParts) {
 		this.url = url;
 		this.productToken = productToken;
 		this.defaultMaxNumberOfParts = defaultMaxNumberOfParts;
@@ -70,35 +68,34 @@ public class CMSenderOneMessageImpl implements CMSender {
 	 */
 	public SMSResponse send(Object body) throws MessagingException {
 
-		// TODO: Ver en https://dashboard.onlinesmsgateway.com/docs
-		// Los posibles errores que se pueden devoler y realizar las
-		// validaciones adecuadas antes de enviar.
-
-		SMSMessage smsMessage = (SMSMessage) body;
-
-		// Extend smsMessage to CMMessage
-		// This is the instance we will use to build the XML document to be sent
-		// to our provider.
-		CMMessage cmMessage = new CMMessage();
-		cmMessage.setMessage(smsMessage.getMessage());
-		cmMessage.setIdAsString(smsMessage.getIdAsString());
-		cmMessage.setPhoneNumber(smsMessage.getPhoneNumber());
-		cmMessage.setDynamicSender(smsMessage.getDynamicFrom());
-
-		// Unicode and multipart
-		this.setUnicodeAndMultipart(cmMessage);
-
-		// TODO: Phone number validation
-		PhoneNumber pn = null; // cmMessage.getPhoneNumber();
-		PhoneNumberUtil.getInstance().isValidNumber(pn);
-		// String telefono = this.getPhoneNumberInE164(phoneNumber);
-
-		// TODO: Message validation.
-
-		// Dynamic FROM validation
-		// Maximo 11 caracteres.
+		// TODO: Check https://dashboard.onlinesmsgateway.com/docs for responses
 
 		try {
+
+			SMSMessage smsMessage = (SMSMessage) body;
+
+			// Extend smsMessage to CMMessage
+			// This is the instance we will use to build the XML document to be
+			// sent
+			// to our provider.
+			CMMessage cmMessage = new CMMessage();
+			cmMessage.setMessage(smsMessage.getMessage());
+			cmMessage.setIdAsString(smsMessage.getIdAsString());
+			cmMessage.setPhoneNumber(smsMessage.getPhoneNumber());
+			cmMessage.setDynamicSender(smsMessage.getDynamicFrom());
+
+			// Unicode and multipart
+			this.setUnicodeAndMultipart(cmMessage);
+
+			// TODO: Phone number validation
+			// PhoneNumber pn = null; // from cmMessage.getPhoneNumber();
+			// PhoneNumberUtil.getInstance().isValidNumber(pn);
+			// String telefono = this.getPhoneNumberInE164(phoneNumber);
+
+			// TODO: Message validation.
+
+			// Dynamic FROM validation
+			// Maximo 11 caracteres.
 
 			// 1.Construct XML. Throws XMLConstructionException
 			String xml = createXml(cmMessage);
@@ -124,8 +121,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			// TODO: Arguments Validated en este punto.
 
 			ByteArrayOutputStream xml = new ByteArrayOutputStream();
-			DocumentBuilderFactory factory = DocumentBuilderFactory
-					.newInstance();
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setNamespaceAware(true);
 
 			// Get the DocumentBuilder
@@ -153,8 +149,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			// Parejas ELEMENTO-VALORTEXTO
 			// <FROM>VALOR</FROM>
 			Element fromElement = doc.createElement("FROM");
-			fromElement.appendChild(doc.createTextNode(message
-					.getDynamicSender()));
+			fromElement.appendChild(doc.createTextNode(message.getDynamicSender()));
 			msgElement.appendChild(fromElement);
 
 			// <BODY>VALOR</BODY>
@@ -180,29 +175,24 @@ public class CMSenderOneMessageImpl implements CMSender {
 			String id = message.getIdAsString();
 			if (id != null && !id.isEmpty()) {
 				Element refElement = doc.createElement("REFERENCE");
-				refElement.appendChild(doc.createTextNode(""
-						+ message.getIdAsString()));
+				refElement.appendChild(doc.createTextNode("" + message.getIdAsString()));
 				msgElement.appendChild(refElement);
 			}
 
 			// <MINIMUMNUMBEROFMESSAGEPARTS>1</MINIMUMNUMBEROFMESSAGEPARTS>
 			// <MAXIMUMNUMBEROFMESSAGEPARTS>8</MAXIMUMNUMBEROFMESSAGEPARTS>
 			if (message.isMultipart()) {
-				Element minMessagePartsElement = doc
-						.createElement("MINIMUMNUMBEROFMESSAGEPARTS");
+				Element minMessagePartsElement = doc.createElement("MINIMUMNUMBEROFMESSAGEPARTS");
 				minMessagePartsElement.appendChild(doc.createTextNode("1"));
 				msgElement.appendChild(minMessagePartsElement);
 
-				Element maxMessagePartsElement = doc
-						.createElement("MAXIMUMNUMBEROFMESSAGEPARTS");
-				maxMessagePartsElement.appendChild(doc.createTextNode(Integer
-						.toString(message.getMultiparts())));
+				Element maxMessagePartsElement = doc.createElement("MAXIMUMNUMBEROFMESSAGEPARTS");
+				maxMessagePartsElement.appendChild(doc.createTextNode(Integer.toString(message.getMultiparts())));
 				msgElement.appendChild(maxMessagePartsElement);
 			}
 
 			// Creatate XML as String
-			Transformer aTransformer = TransformerFactory.newInstance()
-					.newTransformer();
+			Transformer aTransformer = TransformerFactory.newInstance().newTransformer();
 			aTransformer.setOutputProperty(OutputKeys.INDENT, "yes");
 			Source src = new DOMSource(doc);
 			Result dest = new StreamResult(xml);
@@ -227,11 +217,9 @@ public class CMSenderOneMessageImpl implements CMSender {
 
 			HttpResponse response = client.execute(post);
 
-			LOG.debug("Response Code : {}", response.getStatusLine()
-					.getStatusCode());
+			LOG.debug("Response Code : {}", response.getStatusLine().getStatusCode());
 
-			BufferedReader rd = new BufferedReader(new InputStreamReader(
-					response.getEntity().getContent()));
+			BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 
 			StringBuffer result = new StringBuffer();
 			String line = "";
@@ -260,11 +248,9 @@ public class CMSenderOneMessageImpl implements CMSender {
 			if (msg.length() > CMConstants.MAX_GSM_MESSAGE_LENGTH) {
 
 				// Multiparts. 153 caracteres max per part
-				int parts = msg.length()
-						% CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
+				int parts = msg.length() % CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
 
-				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts
-						: parts);
+				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts : parts);
 			} // Otherwise multipart = 1
 		} else {
 			// Unicode Message
@@ -273,11 +259,9 @@ public class CMSenderOneMessageImpl implements CMSender {
 			if (msg.length() > CMConstants.MAX_UNICODE_MESSAGE_LENGTH) {
 
 				// Multiparts. 67 caracteres max per part
-				int parts = msg.length()
-						% CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
+				int parts = msg.length() % CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
 
-				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts
-						: parts);
+				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts : parts);
 			} // Otherwise multipart = 1
 		}
 	}

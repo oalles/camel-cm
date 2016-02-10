@@ -19,8 +19,7 @@ public class CMProducer extends DefaultProducer {
 	private final CMSender sender;
 	private final ResponseProcessor responseProcessor;
 
-	public CMProducer(CMEndpoint endpoint, CMSender sender,
-			ResponseProcessor responseProcessor) {
+	public CMProducer(CMEndpoint endpoint, CMSender sender, ResponseProcessor responseProcessor) {
 		super(endpoint);
 		this.sender = sender;
 		this.responseProcessor = responseProcessor;
@@ -37,15 +36,14 @@ public class CMProducer extends DefaultProducer {
 
 			Object body = exchange.getIn().getBody();
 
-			// Provider response
-			SMSResponse cmResponse = null;
-			if (body instanceof SMSResponse) {
-				// Throws MessagingException
-				cmResponse = sender.send((SMSMessage) body);
-			} else {
-			}
+			// CM response
 
-			//
+			if (!(body instanceof SMSMessage))
+				// Throws MessagingException
+				throw new RuntimeException("Check Consistency");
+
+			SMSResponse cmResponse = sender.send((SMSMessage) body);
+
 			if (responseProcessor != null && cmResponse != null) {
 				responseProcessor.processResponse(cmResponse);
 			}
@@ -64,8 +62,7 @@ public class CMProducer extends DefaultProducer {
 			// mimeMessage.getMessageID());
 		} catch (TypeConversionException e) {
 			// Body hast to be an instance of CMMessage
-			exchange.setException(new PayloadException(
-					"Check in message body - Has to be an instance of CMMessage"));
+			exchange.setException(new PayloadException("Check in message body - Has to be an instance of CMMessage"));
 		} catch (MessagingException e) {
 			exchange.setException(e);
 		}

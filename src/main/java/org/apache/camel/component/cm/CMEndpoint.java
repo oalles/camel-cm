@@ -37,10 +37,7 @@ public class CMEndpoint extends DefaultEndpoint {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMEndpoint.class);
 
-	// TODO: Este ENDPOINT es un SYNC request a CM host. Debería añadir un
-	// ResponseProcessor.
-	// El response si es un 200. Devuelve una LINEA por MENSAJE? O Dos?
-	// Debería procesarse el mismo TIPO que el WEBHOOK?
+	// TODO: SYNC request to CM host. See ResponseProcessor.
 
 	@UriPath
 	@Metadata(description = "SMS Provider HOST with scheme", required = "true")
@@ -51,18 +48,18 @@ public class CMEndpoint extends DefaultEndpoint {
 	 */
 	private CMConfiguration configuration;
 
-	// We are just going to allow fully initialized endpoint instances
 	/**
 	 * Constructs a partially-initialized CMEndpoint instance. Useful when
 	 * creating endpoints manually (e.g., as beans in Spring).
 	 */
+	// We are just going to allow fully initialized endpoint instances
 	// public CMEndpoint() {
 	// }
 
 	/**
-	 * Constructs a fully-initialized CMEndpoint instance. This is the
-	 * preferred method of constructing an object from Java code (as opposed to
-	 * Spring beans, etc.).
+	 * Constructs a fully-initialized CMEndpoint instance. This is the preferred
+	 * method of constructing an object from Java code (as opposed to Spring
+	 * beans, etc.).
 	 * 
 	 * @param endpointUri
 	 *            the full URI used to create this endpoint
@@ -78,14 +75,13 @@ public class CMEndpoint extends DefaultEndpoint {
 	}
 
 	/**
-	 * A producer not needed
+	 * Provides a channel on which clients can send Messages to a CM Endpoint
 	 */
 	@Override
 	public Producer createProducer() throws Exception {
 		CMConfiguration config = getConfiguration();
-		CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(
-				host, config.getProductToken(),
-				config.getDefaultMaxNumberOfParts()),
+		CMProducer producer = new CMProducer(this,
+				new CMSenderOneMessageImpl(host, config.getProductToken(), config.getDefaultMaxNumberOfParts()),
 				config.getResponseProcessor());
 		return producer;
 	}
@@ -93,8 +89,7 @@ public class CMEndpoint extends DefaultEndpoint {
 	@Override
 	public Consumer createConsumer(Processor processor) throws Exception {
 
-		throw new RuntimeCamelException(
-				"So far, cannot consume from CM Endpoint: " + getEndpointUri());
+		throw new RuntimeCamelException("So far, cannot consume from CM Endpoint: " + getEndpointUri());
 	}
 
 	public CMConfiguration getConfiguration() {

@@ -50,9 +50,6 @@ public class CMComponent extends UriEndpointComponent {
 	protected Endpoint createEndpoint(String uri, String remaining,
 			Map<String, Object> parameters) throws Exception {
 
-		// URISupport.sanitizePath(remaining) si muestra pwd.
-		// BORRAME: Remaining puede ser usuario@host:port
-
 		String url = CMConstants.DEFAULT_SCHEME + remaining;
 		if (!UrlValidator.getInstance().isValid(url)) {
 			String errorMessage = String
