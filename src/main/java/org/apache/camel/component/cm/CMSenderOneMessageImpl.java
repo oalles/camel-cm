@@ -97,7 +97,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			LOG.debug("Response: " + response);
 
 			// 3. TODO: Build SMSResponse
-			SMSResponse cmResponse = null;
+			SMSResponse cmResponse = buildSMSResponse(response);
 			return cmResponse;
 		} catch (RuntimeException e) {
 			LOG.error("Imposible enviar sms: ", e);
@@ -252,6 +252,11 @@ public class CMSenderOneMessageImpl implements CMSender {
 				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts : parts);
 			} // Otherwise multipart = 1
 		}
+	}
+
+	// TODO
+	private SMSResponse buildSMSResponse(String response) {
+		return null;
 	}
 
 	// public String getPhoneNumberInE164(String telefono) {
