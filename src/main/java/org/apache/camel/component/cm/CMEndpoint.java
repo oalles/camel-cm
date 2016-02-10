@@ -53,14 +53,14 @@ public class CMEndpoint extends DefaultEndpoint {
 
 	// We are just going to allow fully initialized endpoint instances
 	/**
-	 * Constructs a partially-initialized MongoMBEndpoint instance. Useful when
+	 * Constructs a partially-initialized CMEndpoint instance. Useful when
 	 * creating endpoints manually (e.g., as beans in Spring).
 	 */
-	// public MongoMBEndpoint() {
+	// public CMEndpoint() {
 	// }
 
 	/**
-	 * Constructs a fully-initialized MongoMBEndpoint instance. This is the
+	 * Constructs a fully-initialized CMEndpoint instance. This is the
 	 * preferred method of constructing an object from Java code (as opposed to
 	 * Spring beans, etc.).
 	 * 

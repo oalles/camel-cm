@@ -72,18 +72,9 @@ public class CMComponent extends UriEndpointComponent {
 		CMConfiguration config = new CMConfiguration();
 		setProperties(config, parameters);
 
-		// LOG.debug("Looking up in CAMEL REGISTRY for bean referenced by: {}",
-		// URISupport.sanitizePath(remaining));
-		// Throws NoSuchBeanException -> Let it go
-		// MongoClient mongoClient = CamelContextHelper.mandatoryLookup(
-		// getCamelContext(), remaining, MongoClient.class);
-		// config.setMongoClient(mongoClient);
-
-		// Before the endpoint is built check configuration is valid
-		// config.isValid();
-
 		// Component is an Endpoint factory. So far, just one Endpoint type.
 		// Endpoint construction and configuration.
+		
 		CMEndpoint endpoint = new CMEndpoint(uri, this);
 		endpoint.setConfiguration(config);
 		endpoint.setHost(remaining);
