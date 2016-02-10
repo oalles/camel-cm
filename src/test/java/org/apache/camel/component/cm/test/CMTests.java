@@ -24,15 +24,15 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 @RunWith(CamelSpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
-// @MockEndpoints
-// @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-@DisableJmx(false)
-public class ATestClass extends AbstractJUnit4SpringContextTests {
+//@DisableJmx(false)
+//@MockEndpoints
+//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class CMTests extends AbstractJUnit4SpringContextTests {
 
 	// dependency: camel-spring-javaconfig
 
-	private static Logger LOG = LoggerFactory.getLogger(ATestClass.class);
+	private static Logger LOG = LoggerFactory.getLogger(CMTests.class);
 
 	@Autowired
 	private CamelContext camelContext;

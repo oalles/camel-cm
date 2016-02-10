@@ -29,7 +29,7 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 				// final String productTokenString =
 				// env.getRequiredProperty("cm.product-token");
 				final String productTokenString = UUID.randomUUID().toString();
-				final String sender = env.getProperty("cm.default-sender");
+				final String sender = env.getRequiredProperty("cm.default-sender");
 
 				final StringBuffer cmUri = new StringBuffer("cm:" + host).append("?productToken=")
 						.append(productTokenString);
@@ -57,12 +57,13 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 				cmUri.append("&defaultMaxNumberOfParts=").append(defaultMaxNumberOfParts.toString());
 
 				// Route definition
-				from("direct:sms").setExchangePattern(ExchangePattern.InOnly).to(cmUri.toString()).routeId(SIMPLE_ROUTE_ID).autoStartup(true);
+				from("direct:sms").setExchangePattern(ExchangePattern.InOnly).to(cmUri.toString()).to("mock:test")
+						.routeId(SIMPLE_ROUTE_ID).autoStartup(true);
 
 			}
 		};
 	}
-	
+
 	public void setEnvironment(Environment environment) {
 		this.env = environment;
 	}
