@@ -36,7 +36,7 @@ public class CMConfiguration {
 	private boolean testConnectionOnStartup;
 
 	/**
-	 * Referencia en el registro de un procesador de RESPUESTAS CM.
+	 * Reference in the registry for a ResponseProcessor, which handles responses from CM Server.
 	 */
 	private ResponseProcessor responseProcessor;
 
