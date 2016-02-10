@@ -5,7 +5,6 @@ package org.apache.camel.component.cm.client;
  */
 public class SMSMessage {
 
-	private final String idAsString;
 	/**
 	 * Required
 	 */
@@ -14,10 +13,11 @@ public class SMSMessage {
 	 * Required. MSISDN value
 	 */
 	private final String phoneNumber;
-	private final String dynamicFrom;
 
-	public SMSMessage(String idAsString, String message, String phoneNumber,
-			String dynamicFrom) {
+	private String dynamicFrom;
+	private String idAsString;
+
+	public SMSMessage(String idAsString, String message, String phoneNumber, String dynamicFrom) {
 		this.idAsString = idAsString;
 		this.message = message;
 		this.phoneNumber = phoneNumber;
@@ -38,5 +38,13 @@ public class SMSMessage {
 
 	public String getDynamicFrom() {
 		return dynamicFrom;
+	}
+
+	public void setDynamicFrom(String from) {
+		this.dynamicFrom = from;
+	}
+
+	public void setIdAsString(String idAsString) {
+		this.idAsString = idAsString;
 	}
 }

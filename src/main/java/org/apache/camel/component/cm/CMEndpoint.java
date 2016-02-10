@@ -81,7 +81,7 @@ public class CMEndpoint extends DefaultEndpoint {
 	public Producer createProducer() throws Exception {
 		CMConfiguration config = getConfiguration();
 		CMProducer producer = new CMProducer(this,
-				new CMSenderOneMessageImpl(host, config.getProductToken(), config.getDefaultMaxNumberOfParts()),
+				new CMSenderOneMessageImpl(CMConstants.DEFAULT_SCHEME + host, config.getProductToken(), config.getDefaultMaxNumberOfParts()),
 				config.getResponseProcessor());
 		return producer;
 	}

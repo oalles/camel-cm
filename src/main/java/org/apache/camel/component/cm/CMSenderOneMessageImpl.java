@@ -38,7 +38,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 
 import net.freeutils.charset.CCGSMCharset;
 
@@ -60,24 +59,18 @@ public class CMSenderOneMessageImpl implements CMSender {
 	}
 
 	/**
-	 * El producer recibe un body: 1. Validar el BODY. Puede ser un CMMessage o
-	 * una collection de CMMessages 2. Extender cada CMMessage a
-	 * CMMessageExtended que me permite crear el XML que envio a CM. 3. Crear el
-	 * documento XML para el envio. 4. POST del String a la URL configurada.
+	 * Sends a SMSMessage to CM
 	 * 
 	 */
-	public SMSResponse send(Object body) throws MessagingException {
+	public SMSResponse send(SMSMessage smsMessage) throws MessagingException {
 
 		// TODO: Check https://dashboard.onlinesmsgateway.com/docs for responses
 
 		try {
 
-			SMSMessage smsMessage = (SMSMessage) body;
-
 			// Extend smsMessage to CMMessage
 			// This is the instance we will use to build the XML document to be
-			// sent
-			// to our provider.
+			// sent to CM SMS GW.
 			CMMessage cmMessage = new CMMessage();
 			cmMessage.setMessage(smsMessage.getMessage());
 			cmMessage.setIdAsString(smsMessage.getIdAsString());
@@ -94,8 +87,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 
 			// TODO: Message validation.
 
-			// Dynamic FROM validation
-			// Maximo 11 caracteres.
+			// TODO: Dynamic FROM validation - 11 chars.
 
 			// 1.Construct XML. Throws XMLConstructionException
 			String xml = createXml(cmMessage);
@@ -134,7 +126,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			// ROOT Element es MESSAGES
 			Element root = doc.getDocumentElement();
 
-			// Se crea el element AUTHENTICATION
+			// AUTHENTICATION element
 			Element authenticationElement = doc.createElement("AUTHENTICATION");
 			Element productTokenElement = doc.createElement("PRODUCTTOKEN");
 			authenticationElement.appendChild(productTokenElement);
@@ -142,27 +134,26 @@ public class CMSenderOneMessageImpl implements CMSender {
 			productTokenElement.appendChild(productTokenValue);
 			root.appendChild(authenticationElement);
 
-			// Se crea el element MSG
+			// MSG Element
 			Element msgElement = doc.createElement("MSG");
 			root.appendChild(msgElement);
 
-			// Parejas ELEMENTO-VALORTEXTO
-			// <FROM>VALOR</FROM>
+			// <FROM>VALUE</FROM>
 			Element fromElement = doc.createElement("FROM");
 			fromElement.appendChild(doc.createTextNode(message.getDynamicSender()));
 			msgElement.appendChild(fromElement);
 
-			// <BODY>VALOR</BODY>
+			// <BODY>VALUE</BODY>
 			Element bodyElement = doc.createElement("BODY");
 			bodyElement.appendChild(doc.createTextNode(message.getMessage()));
 			msgElement.appendChild(bodyElement);
 
-			// <TO>VALOR</TO>
+			// <TO>VALUE</TO>
 			Element toElement = doc.createElement("TO");
 			toElement.appendChild(doc.createTextNode(message.getPhoneNumber()));
 			msgElement.appendChild(toElement);
 
-			// <DCS>VALOR</DCS> - Si es UNICODE - messageOut.isGSM338Enc
+			// <DCS>VALUE</DCS> - Si es UNICODE - messageOut.isGSM338Enc
 			// false
 			if (message.isUnicode()) {
 				Element dcsElement = doc.createElement("DCS");
@@ -170,7 +161,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 				msgElement.appendChild(dcsElement);
 			}
 
-			// <REFERENCE>VALOR</REFERENCE> -Es MI ID de mensajes(12 bytes)
+			// <REFERENCE>VALUE</REFERENCE> -Es MI ID de mensajes(12 bytes)
 			// como string - Limite 32 caracteres.
 			String id = message.getIdAsString();
 			if (id != null && !id.isEmpty()) {
@@ -227,9 +218,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 				result.append(line);
 			}
 
-			// TODO: Añadir el procesado de la respuesta.
-			// Aqui deberia construir mi estructura SMSResponse . CMResponse
-			// deberia ser la respuesta que me da CM.
+			// TODO: Process Response?
 			return result.toString();
 		} catch (IOException io) {
 			throw new ProviderException(io);

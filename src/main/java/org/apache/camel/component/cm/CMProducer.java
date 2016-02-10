@@ -1,20 +1,14 @@
 package org.apache.camel.component.cm;
 
 import org.apache.camel.Exchange;
-import org.apache.camel.TypeConversionException;
 import org.apache.camel.component.cm.client.ResponseProcessor;
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.cm.client.SMSResponse;
-import org.apache.camel.component.cm.exceptions.MessagingException;
 import org.apache.camel.component.cm.exceptions.PayloadException;
 import org.apache.camel.component.cm.exceptions.ProviderHostUnavailbleException;
 import org.apache.camel.impl.DefaultProducer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CMProducer extends DefaultProducer {
-
-	private static final Logger LOG = LoggerFactory.getLogger(CMProducer.class);
 
 	private final CMSender sender;
 	private final ResponseProcessor responseProcessor;
@@ -29,64 +23,59 @@ public class CMProducer extends DefaultProducer {
 
 		try {
 
-			// Vamos a dar salida a CM.
+			// TODO: 1 CMMessage to 1000CMMessages ?
 
-			// El Body puede ser un CMMessage o una colleccion de hasta
-			// 1000CMMessages.
+			SMSMessage smsMessage = exchange.getIn().getBody(SMSMessage.class);
 
-			Object body = exchange.getIn().getBody();
+			if (smsMessage.getDynamicFrom() == null || smsMessage.getDynamicFrom().isEmpty())
+				smsMessage.setDynamicFrom(getConfiguration().getDefaultFrom());
 
-			// CM response
-
-			if (!(body instanceof SMSMessage))
-				// Throws MessagingException
-				throw new RuntimeException("Check Consistency");
-
-			SMSResponse cmResponse = sender.send((SMSMessage) body);
+			// throws MessagingException
+			SMSResponse cmResponse = sender.send(smsMessage);
 
 			if (responseProcessor != null && cmResponse != null) {
+
 				responseProcessor.processResponse(cmResponse);
+
+				// TODO: set the message ID for further processing
+				// exchange.getIn().setHeader(MailConstants.MAIL_MESSAGE_ID,
+				// mimeMessage.getMessageID());
 			}
 
-			// TODO: El envio con exito debería devolver un ID? del message? o
-			// esta ya en el CMMessage
-
-			// En caso de exito hay que asociar este envio por ejemplo a un
-			// receptor.
-
-			// TODO: Tengo en mi NotificacionesDB. idUsurario | idSMS | status
-			// completado via WEBHOOK.
-
-			// set the message ID for further processing
-			// exchange.getIn().setHeader(MailConstants.MAIL_MESSAGE_ID,
-			// mimeMessage.getMessageID());
-		} catch (TypeConversionException e) {
-			// Body hast to be an instance of CMMessage
-			exchange.setException(new PayloadException("Check in message body - Has to be an instance of CMMessage"));
-		} catch (MessagingException e) {
-			exchange.setException(e);
+		} catch (ClassCastException e) {
+			String m = "Check in message body - Has to be an instance of SMSMessage";
+			log.error(m, e);
+			exchange.setException(new PayloadException(m));
+		} catch (RuntimeException e) {
+			log.error("Cannot send the message ", e);
+			// Body hast to be an instance of SMSMessage
+			exchange.setException(new PayloadException(e));
 		}
 	}
 
 	protected void doStart() throws Exception {
+
 		// log at debug level for singletons, for prototype scoped log at trace
 		// level to not spam logs
+
+		log.debug("Starting CMProducer");
+
 		CMConfiguration configuration = getConfiguration();
+
 		if (configuration.isTestConnectionOnStartup()) {
-			// TODO: How to test
+			// TODO: How to test? Does it make sense?
 			throw new ProviderHostUnavailbleException();
 		}
 
 		String defaultSender = configuration.getDefaultFrom();
 		if (defaultSender == null || defaultSender.isEmpty()) {
-			// TODO: Obtener Default Sender de la cuenta del usuario asociado al
-			// TOKEN.
-			// Si no estuviera configurado
+			// TODO: Default Sender set in the account? Do anything?
 		}
 
-		// Continuar configuracion de forma habitual.
+		// keep starting
 		super.doStart();
 
+		log.debug("CMProducer started");
 	}
 
 	@Override
