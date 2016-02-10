@@ -19,5 +19,5 @@ CM endpoints act like a **producer** and support the following options.
 
 | Name  | Default Value | Description |
 | ------------- | ------------- | ------------- |
-| defaultMaxNumberOfParts  | 8 | A message can be truncated. Technically the gateway will first check if a message is larger than 160 characters, if so, the message will be cut into multiple 153 characters parts limited by these parameters. |
-| responseProcessor  | null  | A reference in the registry to a ResponseProcessor |
+| defaultMaxNumberOfParts  | 8 |  If it is a multipart message forces the max number. Technically the gateway will first check if a message is larger than 160 characters, if so, the message will be cut into multiple 153 characters parts limited by these parameters. |
+| responseProcessor  | null  | A reference in the registry to a custom ResponseProcessor |
