@@ -96,8 +96,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			String response = doHttpPost(this.url, xml);
 			LOG.debug("Response: " + response);
 
-			// 3. TODO: Build CMResponse en funcion de RESPONSE.
-			// Dar estructura al RESPONSE. Analogo a SPRIGN WEB. Status, etc.
+			// 3. TODO: Build SMSResponse
 			SMSResponse cmResponse = null;
 			return cmResponse;
 		} catch (RuntimeException e) {
