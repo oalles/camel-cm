@@ -3,13 +3,11 @@ package org.apache.camel.component.cm.test;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
 import org.apache.camel.Route;
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringDelegatingTestContextLoader;
 import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
-import org.apache.camel.test.spring.DisableJmx;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,9 +23,9 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 @RunWith(CamelSpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-//@DisableJmx(false)
-//@MockEndpoints
-//@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// @DisableJmx(false)
+// @MockEndpoints
+// @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CMTests extends AbstractJUnit4SpringContextTests {
 
 	// dependency: camel-spring-javaconfig
@@ -37,8 +35,11 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 	@Autowired
 	private CamelContext camelContext;
 
+	// @Produce(uri = "direct:sms")
+	// private ProducerTemplate producerTemplate;
+
 	@Produce(uri = "direct:sms")
-	private ProducerTemplate producerTemplate;
+	private CMProxy cmProxy;
 
 	@EndpointInject(uri = "mock:test")
 	private MockEndpoint mock;
@@ -71,7 +72,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 
 		// Body
 		SMSMessage smsMessage = new SMSMessage(null, "Hello CM", "+34600000000", null);
-		producerTemplate.sendBody(smsMessage);
+		cmProxy.send(smsMessage);
 
 		mock.assertIsSatisfied();
 	}
