@@ -26,6 +26,8 @@ public class CMProducer extends DefaultProducer {
 			// TODO: 1 CMMessage to 1000CMMessages ?
 
 			SMSMessage smsMessage = exchange.getIn().getBody(SMSMessage.class);
+			if (smsMessage == null)
+				throw new ClassCastException();
 
 			if (smsMessage.getDynamicFrom() == null || smsMessage.getDynamicFrom().isEmpty())
 				smsMessage.setDynamicFrom(getConfiguration().getDefaultFrom());

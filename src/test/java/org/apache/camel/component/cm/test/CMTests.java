@@ -7,7 +7,6 @@ import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringDelegatingTestContextLoader;
 import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -63,7 +62,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 		camelContext.startRoute(TestConfiguration.SIMPLE_ROUTE_ID);
 
 		// Body
-		SMSMessage smsMessage = new SMSMessage(null, "Hello CM", "+34600000000", null);
+		SMSMessage smsMessage = new SMSMessage("Hello CM", "+34600000000");
 		cmProxy.send(smsMessage);
 
 		mock.assertIsSatisfied();

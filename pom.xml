@@ -9,7 +9,6 @@
 		<version>2.16.2</version>
 	</parent>
 
-	<groupId>es.neivi</groupId>
 	<artifactId>camel-cm</artifactId>
 	<packaging>bundle</packaging>
 	<name>Camel :: CM</name>

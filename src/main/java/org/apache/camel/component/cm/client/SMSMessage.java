@@ -24,6 +24,10 @@ public class SMSMessage {
 		this.dynamicFrom = dynamicFrom;
 	}
 
+	public SMSMessage(String message, String phoneNumber) {
+		this(null, message, phoneNumber, null);
+	}
+
 	public String getIdAsString() {
 		return idAsString;
 	}
