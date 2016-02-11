@@ -8,6 +8,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 
+/**
+ * Builds a SimpleRoute to send a message to CM GW and CM Uri is built based on properties in a file.
+ */
 @Configuration("cmConfig")
 @PropertySource("classpath:/cm-smsgw.properties")
 public class TestConfiguration extends SingleRouteCamelConfiguration {
@@ -39,7 +42,7 @@ public class TestConfiguration extends SingleRouteCamelConfiguration {
 	 */
 	@Override
 	public final void setApplicationContext(final ApplicationContext applicationContext) {
-	
+
 		super.setApplicationContext(applicationContext);
 
 		Environment env = applicationContext.getEnvironment();

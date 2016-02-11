@@ -28,9 +28,6 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 	@Autowired
 	private CamelContext camelContext;
 
-	// @Produce(uri = "direct:sms")
-	// private ProducerTemplate producerTemplate;
-
 	@Produce(uri = "direct:sms")
 	private CMProxy cmProxy;
 
@@ -44,18 +41,18 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 		mock.reset();
 	}
 
-	@After
-	public void afterTest() {
+	// @After
+	// public void afterTest() {
 
-		// Stop all routes
-		// for (Route route : camelContext.getRoutes()) {
-		// try {
-		// camelContext.stopRoute(route.getId());
-		// } catch (Exception e) {
-		// logger.error("Exception trying to stop de routes", e);
-		// }
-		// }
-	}
+	// Stop all routes
+	// for (Route route : camelContext.getRoutes()) {
+	// try {
+	// camelContext.stopRoute(route.getId());
+	// } catch (Exception e) {
+	// logger.error("Exception trying to stop de routes", e);
+	// }
+	// }
+	// }
 
 	// @DirtiesContext
 	@Test
