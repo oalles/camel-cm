@@ -13,7 +13,7 @@ cm://sgw01.cm.nl/gateway.ashx?defaultFrom=DefaultSender&defaultMaxNumberOfParts=
 ```
 
 
-### Endpoint Option
+### Endpoint Options
 
 CM endpoints act like a **producer** and support the following options.
 
