@@ -21,3 +21,7 @@ CM endpoints act like a **producer** and support the following options.
 | ------------- | ------------- | ------------- |
 | defaultMaxNumberOfParts  | 8 |  If it is a multipart message forces the max number. Technically the gateway will first check if a message is larger than 160 characters, if so, the message will be cut into multiple 153 characters parts limited by these parameters. |
 | responseProcessor  | null  | A reference in the registry to a custom ResponseProcessor |
+
+### Tests
+
+Tests provided so far show a valid [Spring Configuration](https://github.com/oalles/camel-cm/blob/master/src/test/java/org/apache/camel/component/cm/test/TestConfiguration.java). URI is built from properties in a [file](https://github.com/oalles/camel-cm/blob/master/src/test/resources/cm-smsgw.properties). 

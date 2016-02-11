@@ -2,7 +2,6 @@ package org.apache.camel.component.cm.test;
 
 import java.util.UUID;
 
-import org.apache.camel.ExchangePattern;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
 import org.springframework.context.EnvironmentAware;
@@ -56,9 +55,10 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 						.parseInt(env.getProperty("defaultMaxNumberOfParts", "8"));
 				cmUri.append("&defaultMaxNumberOfParts=").append(defaultMaxNumberOfParts.toString());
 
+				log.info("CM URI: {}", cmUri.toString());
+
 				// Route definition
-				from("direct:sms").setExchangePattern(ExchangePattern.InOnly).to(cmUri.toString()).to("mock:test")
-						.routeId(SIMPLE_ROUTE_ID).autoStartup(true);
+				from("direct:sms").to(cmUri.toString()).to("mock:test").routeId(SIMPLE_ROUTE_ID).autoStartup(true);
 
 			}
 		};
