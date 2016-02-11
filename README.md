@@ -1,6 +1,6 @@
 # camel-cm
 
-Camel component for the CM SMS Gateway. 
+[Camel component](http://camel.apache.org/components.html) for the [CM SMS Gateway](https://www.cmtelecom.com). 
 
 It allows to integrate [CM SMS API](https://dashboard.onlinesmsgateway.com/docs) in an application as a camel component. 
 
