@@ -12,8 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -29,8 +27,6 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 public class CMTests extends AbstractJUnit4SpringContextTests {
 
 	// dependency: camel-spring-javaconfig
-
-	private static Logger LOG = LoggerFactory.getLogger(CMTests.class);
 
 	@Autowired
 	private CamelContext camelContext;
@@ -59,7 +55,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 			try {
 				camelContext.stopRoute(route.getId());
 			} catch (Exception e) {
-				LOG.error("Exception trying to stop de routes", e);
+				logger.error("Exception trying to stop de routes", e);
 			}
 		}
 	}
