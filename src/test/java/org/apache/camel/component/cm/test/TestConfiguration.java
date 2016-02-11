@@ -2,18 +2,19 @@ package org.apache.camel.component.cm.test;
 
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
-import org.springframework.context.EnvironmentAware;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.util.Assert;
 
-@Configuration
+@Configuration("cmConfig")
 @PropertySource("classpath:/cm-smsgw.properties")
-public class TestConfiguration extends SingleRouteCamelConfiguration implements EnvironmentAware {
+public class TestConfiguration extends SingleRouteCamelConfiguration {
 
-	private static final String SIMPLE_ROUTE_ID = "simple-route";
+	public static final String SIMPLE_ROUTE_ID = "simple-route";
 
-	private Environment env;
+	private String uri;
 
 	@Override
 	public RouteBuilder route() {
@@ -22,7 +23,7 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 			@Override
 			public void configure() throws Exception {
 
-				String uri = buildUri();
+				Assert.hasLength(uri);
 
 				log.info("CM URI: {}", uri);
 
@@ -34,11 +35,14 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 	}
 
 	/**
-	 * Builds the CM Component URI based on the given properties.
-	 * 
-	 * @return
+	 * Build the URI of the CM Component based on Environmental properties
 	 */
-	private String buildUri() {
+	@Override
+	public final void setApplicationContext(final ApplicationContext applicationContext) {
+	
+		super.setApplicationContext(applicationContext);
+
+		Environment env = applicationContext.getEnvironment();
 
 		final String host = env.getRequiredProperty("cm.url");
 		final String productTokenString = env.getRequiredProperty("cm.product-token");
@@ -67,10 +71,10 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 		final Integer defaultMaxNumberOfParts = Integer.parseInt(env.getProperty("defaultMaxNumberOfParts", "8"));
 		cmUri.append("&defaultMaxNumberOfParts=").append(defaultMaxNumberOfParts.toString());
 
-		return cmUri.toString();
+		this.uri = cmUri.toString();
 	}
 
-	public void setEnvironment(Environment environment) {
-		this.env = environment;
+	public String getUri() {
+		return uri;
 	}
 }

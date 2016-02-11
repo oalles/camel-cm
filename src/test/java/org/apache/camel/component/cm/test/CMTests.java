@@ -3,7 +3,6 @@ package org.apache.camel.component.cm.test;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
-import org.apache.camel.Route;
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringDelegatingTestContextLoader;
@@ -13,14 +12,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
 @RunWith(CamelSpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+// @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 // @DisableJmx(false)
 // @MockEndpoints
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -51,25 +48,29 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 	public void afterTest() {
 
 		// Stop all routes
-		for (Route route : camelContext.getRoutes()) {
-			try {
-				camelContext.stopRoute(route.getId());
-			} catch (Exception e) {
-				logger.error("Exception trying to stop de routes", e);
-			}
-		}
+		// for (Route route : camelContext.getRoutes()) {
+		// try {
+		// camelContext.stopRoute(route.getId());
+		// } catch (Exception e) {
+		// logger.error("Exception trying to stop de routes", e);
+		// }
+		// }
 	}
 
-//	@DirtiesContext
+	// @DirtiesContext
 	@Test
-	public void aSimpleProducer() throws Exception {
+	public void testAsPartOfARoute() throws Exception {
 
 		mock.expectedMessageCount(1);
+
+		camelContext.startRoute(TestConfiguration.SIMPLE_ROUTE_ID);
 
 		// Body
 		SMSMessage smsMessage = new SMSMessage(null, "Hello CM", "+34600000000", null);
 		cmProxy.send(smsMessage);
 
 		mock.assertIsSatisfied();
+
+		camelContext.stopRoute(TestConfiguration.SIMPLE_ROUTE_ID);
 	}
 }
