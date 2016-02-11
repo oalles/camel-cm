@@ -25,9 +25,7 @@ public class TestConfiguration extends SingleRouteCamelConfiguration implements 
 			public void configure() throws Exception {
 
 				final String host = env.getRequiredProperty("cm.url");
-				// final String productTokenString =
-				// env.getRequiredProperty("cm.product-token");
-				final String productTokenString = UUID.randomUUID().toString();
+				final String productTokenString = env.getRequiredProperty("cm.product-token");
 				final String sender = env.getRequiredProperty("cm.default-sender");
 
 				final StringBuffer cmUri = new StringBuffer("cm:" + host).append("?productToken=")
