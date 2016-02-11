@@ -60,7 +60,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 		}
 	}
 
-	@DirtiesContext
+//	@DirtiesContext
 	@Test
 	public void aSimpleProducer() throws Exception {
 
