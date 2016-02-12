@@ -14,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+
 @RunWith(CamelSpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -26,6 +29,8 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 
 	@Autowired
 	private CamelContext camelContext;
+
+	private PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
 
 	@Produce(uri = "direct:sms")
 	private CMProxy cmProxy;
@@ -62,7 +67,8 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 		camelContext.startRoute(TestConfiguration.SIMPLE_ROUTE_ID);
 
 		// Body
-		SMSMessage smsMessage = new SMSMessage("Hello CM", "+34600000000");
+		SMSMessage smsMessage = new SMSMessage("Hello CM",
+				pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
 		cmProxy.send(smsMessage);
 
 		mock.assertIsSatisfied();

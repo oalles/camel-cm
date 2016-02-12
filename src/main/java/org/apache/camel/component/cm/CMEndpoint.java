@@ -127,4 +127,8 @@ public class CMEndpoint extends DefaultEndpoint {
 	public void setHost(String host) {
 		this.host = host;
 	}
+
+	public CMComponent getComponent() {
+		return (CMComponent) super.getComponent();
+	}
 }

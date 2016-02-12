@@ -2,11 +2,14 @@ package org.apache.camel.component.cm;
 
 import java.nio.charset.CharsetEncoder;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+
 import org.apache.camel.Exchange;
 import org.apache.camel.component.cm.client.CMResponse;
 import org.apache.camel.component.cm.client.ResponseProcessor;
 import org.apache.camel.component.cm.client.SMSMessage;
-import org.apache.camel.component.cm.exceptions.PayloadException;
+import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.ProviderHostUnavailbleException;
 import org.apache.camel.impl.DefaultProducer;
 
@@ -23,6 +26,8 @@ import net.freeutils.charset.CCGSMCharset;
  * Sends a validated sms message to CM Endpoints.
  */
 public class CMProducer extends DefaultProducer {
+
+	private Validator validator;
 
 	/**
 	 * sends a valid message to CM endpoints.
@@ -64,7 +69,13 @@ public class CMProducer extends DefaultProducer {
 			if (smsMessage == null)
 				throw new ClassCastException();
 
-			// TODO: SMSMessageValidator to extract validation code
+			// Validate configuration
+			for (ConstraintViolation<SMSMessage> cv : getValidator().validate(smsMessage)) {
+				String msg = String.format("Invalid value for %s: %s", cv.getPropertyPath().toString(),
+						cv.getMessage());
+				log.error(msg);
+				throw new InvalidPayloadException(msg);
+			}
 
 			// phone must begin with '+'. don't need to set the country in
 			// parameter.
@@ -104,14 +115,14 @@ public class CMProducer extends DefaultProducer {
 		} catch (ClassCastException e) {
 			String m = "Check in message body - Has to be an instance of SMSMessage";
 			log.error(m, e);
-			exchange.setException(new PayloadException(m));
+			exchange.setException(new InvalidPayloadException(m));
 		} catch (NumberParseException e) {
 			log.error("NumberParseException was thrown: " + e.toString());
-			exchange.setException(new PayloadException(e));
+			exchange.setException(new InvalidPayloadException(e));
 		} catch (RuntimeException e) {
 			log.error("Cannot send the message ", e);
 			// Body hast to be an instance of SMSMessage
-			exchange.setException(new PayloadException(e));
+			exchange.setException(new InvalidPayloadException(e));
 		}
 	}
 
@@ -183,5 +194,11 @@ public class CMProducer extends DefaultProducer {
 				message.setMultiparts((parts > defaultMaxNumberOfParts) ? defaultMaxNumberOfParts : parts);
 			} // Otherwise multipart = 1
 		}
+	}
+
+	public Validator getValidator() {
+		if (validator == null)
+			validator = getEndpoint().getComponent().getValidator();
+		return validator;
 	}
 }

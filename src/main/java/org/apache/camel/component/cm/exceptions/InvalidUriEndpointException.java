@@ -5,7 +5,7 @@ package org.apache.camel.component.cm.exceptions;
  * when the uri provided for configuration is wrong
  *
  */
-public class InvalidUriEndpointException extends CMDirectException {
+public class InvalidUriEndpointException extends CMValidationException {
 
 	public InvalidUriEndpointException() {
 		super();

@@ -40,6 +40,10 @@ public class CMComponent extends UriEndpointComponent {
 	@BeanInject
 	private Validator validator;
 
+	public Validator getValidator() {
+		return validator;
+	}
+
 	private static final Logger LOG = LoggerFactory.getLogger(CMComponent.class);
 
 	public CMComponent() {
