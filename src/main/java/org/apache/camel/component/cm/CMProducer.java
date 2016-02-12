@@ -13,11 +13,6 @@ import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.ProviderHostUnavailbleException;
 import org.apache.camel.impl.DefaultProducer;
 
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
-
 import net.freeutils.charset.CCGSMCharset;
 
 /**
@@ -40,7 +35,6 @@ public class CMProducer extends DefaultProducer {
 	private final ResponseProcessor responseProcessor;
 
 	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
-	private PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
 
 	public CMProducer(CMEndpoint endpoint, CMSender sender, ResponseProcessor responseProcessor) {
 		super(endpoint);
@@ -77,14 +71,6 @@ public class CMProducer extends DefaultProducer {
 				throw new InvalidPayloadException(msg);
 			}
 
-			// phone must begin with '+'. don't need to set the country in
-			// parameter.
-			PhoneNumber numberProto = pnu.parse(smsMessage.getPhoneNumber(), null);
-			log.debug("Phone Number: {}", smsMessage.getPhoneNumber());
-			log.debug("Country code: {}", numberProto.getCountryCode());
-			log.debug("National Number: {}", numberProto.getNationalNumber());
-			log.debug("E164 format: {}", pnu.format(numberProto, PhoneNumberFormat.E164));
-
 			// We have a valid SMSMessage instance, lets extend to CMMessage
 			// This is the instance we will use to build the XML document to be
 			// sent to CM SMS GW.
@@ -116,9 +102,6 @@ public class CMProducer extends DefaultProducer {
 			String m = "Check in message body - Has to be an instance of SMSMessage";
 			log.error(m, e);
 			exchange.setException(new InvalidPayloadException(m));
-		} catch (NumberParseException e) {
-			log.error("NumberParseException was thrown: " + e.toString());
-			exchange.setException(new InvalidPayloadException(e));
 		} catch (RuntimeException e) {
 			log.error("Cannot send the message ", e);
 			// Body hast to be an instance of SMSMessage

@@ -14,16 +14,17 @@ import com.sun.istack.NotNull;
 public class SMSMessage {
 
 	/**
-	 * Required.
-	 */
-	@NotNull
-	private final String message;
-	/**
 	 * Required MSISDN. E164 value starting with +. (so, don't need to set the
 	 * country in parameter if my phone number begins with "+".)
 	 */
 	@E164
 	private final String phoneNumber;
+
+	/**
+	 * Required.
+	 */
+	@NotNull
+	private final String message;
 
 	@Size(min = 1, max = 11)
 	private final String dynamicFrom;
