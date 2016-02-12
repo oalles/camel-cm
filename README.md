@@ -19,10 +19,13 @@ CM endpoints act like a **producer** and support the following options.
 
 | Name  | Default Value | Description |
 | ------------- | ------------- | ------------- |
-| productToken  | |**Required**. UUID as String. This is the product token that was sent to you by email. Example: 'de7c7df3-81ca-4d1e-863d-95a252120321'|
-| defaultFrom  | |**Required**.| This is the default sender name, to be included in each SMSMessage instance not providing one|
+| productToken  |*none* |**Required**. UUID as String. This is the product token that was sent to you by email. Example: 'de7c7df3-81ca-4d1e-863d-95a252120321'|
+| defaultFrom  | *none* |**Required**. This is the default sender name, to be included in each SMSMessage instance not providing one|
 | defaultMaxNumberOfParts  | 8 |  If it is a multipart message forces the max number. Technically the gateway will first check if a message is larger than 160 characters, if so, the message will be cut into multiple 153 characters parts limited by these parameters. |
 
 ### Tests
 
 Tests provided so far show a valid [Spring Configuration](https://github.com/oalles/camel-cm/blob/master/src/test/java/org/apache/camel/component/cm/test/TestConfiguration.java). Notice that CM Component URI is built from properties in a [file].(https://github.com/oalles/camel-cm/blob/master/src/test/resources/cm-smsgw.properties). 
+
+### Sample of Usage
+You can try [this project](https://github.com/oalles/camel-cm-sample) to see how camel-cm can be integrated in a camel route to send messages to CM SMS GW. 
