@@ -1,17 +1,41 @@
 package org.apache.camel.component.cm;
 
+import java.nio.charset.CharsetEncoder;
+
 import org.apache.camel.Exchange;
+import org.apache.camel.component.cm.client.CMResponse;
 import org.apache.camel.component.cm.client.ResponseProcessor;
 import org.apache.camel.component.cm.client.SMSMessage;
-import org.apache.camel.component.cm.client.SMSResponse;
 import org.apache.camel.component.cm.exceptions.PayloadException;
 import org.apache.camel.component.cm.exceptions.ProviderHostUnavailbleException;
 import org.apache.camel.impl.DefaultProducer;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+
+import net.freeutils.charset.CCGSMCharset;
+
+/**
+ * is the exchange processor.
+ * 
+ * Sends a validated sms message to CM Endpoints.
+ */
 public class CMProducer extends DefaultProducer {
 
+	/**
+	 * sends a valid message to CM endpoints.
+	 */
 	private final CMSender sender;
+
+	/**
+	 * processes the response from CM Endpoints.
+	 */
 	private final ResponseProcessor responseProcessor;
+
+	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
+	private PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
 
 	public CMProducer(CMEndpoint endpoint, CMSender sender, ResponseProcessor responseProcessor) {
 		super(endpoint);
@@ -19,24 +43,57 @@ public class CMProducer extends DefaultProducer {
 		this.responseProcessor = responseProcessor;
 	}
 
+	/**
+	 * Producer is a exchange processor.
+	 * 
+	 * This process is built in several steps.
+	 * 
+	 * 1. Validate message receive from client 2. Send validated message to CM
+	 * endpoints. 3. Process response from CM endpoints.
+	 * 
+	 */
 	public void process(final Exchange exchange) {
 
 		try {
 
-			// TODO: 1 CMMessage to 1000CMMessages ?
+			// TODO: 1 CMMessage to 1000CMMessages ? Will depend on CMSender
+			// implementation? Can i choose CMSender impl via factory?
 
+			// Immutable message receive from clients.
 			SMSMessage smsMessage = exchange.getIn().getBody(SMSMessage.class);
 			if (smsMessage == null)
 				throw new ClassCastException();
 
+			// TODO: SMSMessageValidator to extract validation code
+
+			// phone must begin with '+'. don't need to set the country in
+			// parameter.
+			PhoneNumber numberProto = pnu.parse(smsMessage.getPhoneNumber(), null);
+			log.debug("Phone Number: {}", smsMessage.getPhoneNumber());
+			log.debug("Country code: {}", numberProto.getCountryCode());
+			log.debug("National Number: {}", numberProto.getNationalNumber());
+			log.debug("E164 format: {}", pnu.format(numberProto, PhoneNumberFormat.E164));
+
+			// We have a valid SMSMessage instance, lets extend to CMMessage
+			// This is the instance we will use to build the XML document to be
+			// sent to CM SMS GW.
+			CMMessage cmMessage = new CMMessage(smsMessage.getPhoneNumber(), smsMessage.getMessage());
+
 			if (smsMessage.getDynamicFrom() == null || smsMessage.getDynamicFrom().isEmpty())
-				smsMessage.setDynamicFrom(getConfiguration().getDefaultFrom());
+				cmMessage.setDynamicSender(getConfiguration().getDefaultFrom());
 
+			// Can be null
+			cmMessage.setIdAsString(smsMessage.getIdAsString());
+
+			// Unicode and multipart
+			this.setUnicodeAndMultipart(cmMessage);
+
+			// 2. Send a validated sms message to CM endpoints
 			// throws MessagingException
-			SMSResponse cmResponse = sender.send(smsMessage);
+			CMResponse cmResponse = sender.send(cmMessage);
 
+			// 3. Process the response.
 			if (responseProcessor != null && cmResponse != null) {
-
 				responseProcessor.processResponse(cmResponse);
 
 				// TODO: set the message ID for further processing
@@ -48,6 +105,9 @@ public class CMProducer extends DefaultProducer {
 			String m = "Check in message body - Has to be an instance of SMSMessage";
 			log.error(m, e);
 			exchange.setException(new PayloadException(m));
+		} catch (NumberParseException e) {
+			log.error("NumberParseException was thrown: " + e.toString());
+			exchange.setException(new PayloadException(e));
 		} catch (RuntimeException e) {
 			log.error("Cannot send the message ", e);
 			// Body hast to be an instance of SMSMessage
@@ -69,15 +129,17 @@ public class CMProducer extends DefaultProducer {
 			throw new ProviderHostUnavailbleException();
 		}
 
-		String defaultSender = configuration.getDefaultFrom();
-		if (defaultSender == null || defaultSender.isEmpty()) {
-			// TODO: Default Sender set in the account? Do anything?
-		}
+		// TODO: Entiendo que deberia fijar este valor donde haga la extension
+		// de SMSMessage a CMMessage (To be serialized)
+		// String defaultSender = configuration.getDefaultFrom();
+		// if (defaultSender == null || defaultSender.isEmpty()) {
+		// // TODO: Default Sender set in the account? Do anything?
+		// }
 
 		// keep starting
 		super.doStart();
 
-		log.debug("CMProducer started");
+		log.info("CMProducer started");
 	}
 
 	@Override
@@ -87,5 +149,39 @@ public class CMProducer extends DefaultProducer {
 
 	public CMConfiguration getConfiguration() {
 		return getEndpoint().getConfiguration();
+	}
+
+	private boolean isGsm0338Encodeable(String message) {
+		return encoder.canEncode(message);
+	}
+
+	private void setUnicodeAndMultipart(CMMessage message) {
+
+		final int defaultMaxNumberOfParts = getConfiguration().getDefaultMaxNumberOfParts();
+
+		// Set UNICODE and MULTIPART
+		String msg = message.getMessage();
+		if (isGsm0338Encodeable(msg)) {
+
+			// Not Unicode is Multipart?
+			if (msg.length() > CMConstants.MAX_GSM_MESSAGE_LENGTH) {
+
+				// Multiparts. 153 caracteres max per part
+				int parts = msg.length() % CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
+
+				message.setMultiparts((parts > defaultMaxNumberOfParts) ? defaultMaxNumberOfParts : parts);
+			} // Otherwise multipart = 1
+		} else {
+			// Unicode Message
+			message.setUnicode(true);
+
+			if (msg.length() > CMConstants.MAX_UNICODE_MESSAGE_LENGTH) {
+
+				// Multiparts. 67 caracteres max per part
+				int parts = msg.length() % CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
+
+				message.setMultiparts((parts > defaultMaxNumberOfParts) ? defaultMaxNumberOfParts : parts);
+			} // Otherwise multipart = 1
+		}
 	}
 }

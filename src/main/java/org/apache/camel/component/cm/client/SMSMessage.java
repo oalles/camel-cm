@@ -1,7 +1,9 @@
 package org.apache.camel.component.cm.client;
 
 /**
- * Inmutable
+ * Inmutable.
+ * 
+ * The message instance provided by the client.
  */
 public class SMSMessage {
 
@@ -10,22 +12,23 @@ public class SMSMessage {
 	 */
 	private final String message;
 	/**
-	 * Required. MSISDN value
+	 * Required. MSISDN value starting with +. (so, don't need to set the
+	 * country in parameter if my phone number begins with "+".)
 	 */
 	private final String phoneNumber;
 
-	private String dynamicFrom;
-	private String idAsString;
+	private final String dynamicFrom;
+	private final String idAsString;
+
+	public SMSMessage(String message, String phoneNumber) {
+		this(null, message, phoneNumber, null);
+	}
 
 	public SMSMessage(String idAsString, String message, String phoneNumber, String dynamicFrom) {
 		this.idAsString = idAsString;
 		this.message = message;
 		this.phoneNumber = phoneNumber;
 		this.dynamicFrom = dynamicFrom;
-	}
-
-	public SMSMessage(String message, String phoneNumber) {
-		this(null, message, phoneNumber, null);
 	}
 
 	public String getIdAsString() {
@@ -42,13 +45,5 @@ public class SMSMessage {
 
 	public String getDynamicFrom() {
 		return dynamicFrom;
-	}
-
-	public void setDynamicFrom(String from) {
-		this.dynamicFrom = from;
-	}
-
-	public void setIdAsString(String idAsString) {
-		this.idAsString = idAsString;
 	}
 }

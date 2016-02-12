@@ -28,12 +28,14 @@ public class CMConfiguration {
 	 * truncated. Technically the gateway will first check if a message is
 	 * larger than 160 characters, if so, the message will be cut into multiple
 	 * 153 characters parts limited by these parameters.
+	 * <br>
+	 * {@link https://dashboard.onlinesmsgateway.com/docs#send-a-message-multipart}
 	 */
 	@UriParam
 	private int defaultMaxNumberOfParts;
 
 	@UriParam
-	private boolean testConnectionOnStartup;
+	private boolean testConnectionOnStartup = false;
 
 	/**
 	 * Reference in the registry for a ResponseProcessor, which handles responses from CM Server.

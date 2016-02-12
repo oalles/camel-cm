@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -20,8 +19,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.camel.component.cm.client.SMSMessage;
-import org.apache.camel.component.cm.client.SMSResponse;
+import org.apache.camel.component.cm.client.CMResponse;
 import org.apache.camel.component.cm.exceptions.MessagingException;
 import org.apache.camel.component.cm.exceptions.ProviderException;
 import org.apache.camel.component.cm.exceptions.XMLConstructionException;
@@ -37,57 +35,27 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-
-import net.freeutils.charset.CCGSMCharset;
-
 public class CMSenderOneMessageImpl implements CMSender {
 
 	private static final Logger LOG = LoggerFactory.getLogger(CMSenderOneMessageImpl.class);
 
 	private String url;
 	private UUID productToken;
-	private int defaultMaxNumberOfParts;
 
-	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
-	private PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
-
-	public CMSenderOneMessageImpl(String url, UUID productToken, int defaultMaxNumberOfParts) {
+	public CMSenderOneMessageImpl(String url, UUID productToken) {
 		this.url = url;
 		this.productToken = productToken;
-		this.defaultMaxNumberOfParts = defaultMaxNumberOfParts;
 	}
 
 	/**
-	 * Sends a SMSMessage to CM
+	 * Sends a previously validated SMSMessage to CM endpoint
 	 * 
 	 */
-	public SMSResponse send(SMSMessage smsMessage) throws MessagingException {
+	public CMResponse send(CMMessage cmMessage) throws MessagingException {
 
 		// TODO: Check https://dashboard.onlinesmsgateway.com/docs for responses
 
 		try {
-
-			// Extend smsMessage to CMMessage
-			// This is the instance we will use to build the XML document to be
-			// sent to CM SMS GW.
-			CMMessage cmMessage = new CMMessage();
-			cmMessage.setMessage(smsMessage.getMessage());
-			cmMessage.setIdAsString(smsMessage.getIdAsString());
-			cmMessage.setPhoneNumber(smsMessage.getPhoneNumber());
-			cmMessage.setDynamicSender(smsMessage.getDynamicFrom());
-
-			// Unicode and multipart
-			this.setUnicodeAndMultipart(cmMessage);
-
-			// TODO: Phone number validation
-			// PhoneNumber pn = null; // from cmMessage.getPhoneNumber();
-			// PhoneNumberUtil.getInstance().isValidNumber(pn);
-			// String telefono = this.getPhoneNumberInE164(phoneNumber);
-
-			// TODO: Message validation.
-
-			// TODO: Dynamic FROM validation - 11 chars.
 
 			// 1.Construct XML. Throws XMLConstructionException
 			String xml = createXml(cmMessage);
@@ -97,7 +65,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			LOG.debug("Response: " + response);
 
 			// 3. TODO: Build SMSResponse
-			SMSResponse cmResponse = buildSMSResponse(response);
+			CMResponse cmResponse = buildSMSResponse(response);
 			return cmResponse;
 		} catch (RuntimeException e) {
 			LOG.error("Imposible enviar sms: ", e);
@@ -224,48 +192,8 @@ public class CMSenderOneMessageImpl implements CMSender {
 		}
 	}
 
-	private boolean isGsm0338Encodeable(String message) {
-		return encoder.canEncode(message);
-	}
-
-	private void setUnicodeAndMultipart(CMMessage message) {
-		// Set UNICODE and MULTIPART
-		String msg = message.getMessage();
-		if (isGsm0338Encodeable(msg)) {
-			// Not Unicode is Multipart?
-			if (msg.length() > CMConstants.MAX_GSM_MESSAGE_LENGTH) {
-
-				// Multiparts. 153 caracteres max per part
-				int parts = msg.length() % CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
-
-				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts : parts);
-			} // Otherwise multipart = 1
-		} else {
-			// Unicode Message
-			message.setUnicode(true);
-
-			if (msg.length() > CMConstants.MAX_UNICODE_MESSAGE_LENGTH) {
-
-				// Multiparts. 67 caracteres max per part
-				int parts = msg.length() % CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
-
-				message.setMultiparts((parts > this.defaultMaxNumberOfParts) ? this.defaultMaxNumberOfParts : parts);
-			} // Otherwise multipart = 1
-		}
-	}
-
 	// TODO
-	private SMSResponse buildSMSResponse(String response) {
+	private CMResponse buildSMSResponse(String response) {
 		return null;
 	}
-
-	// public String getPhoneNumberInE164(String telefono) {
-	// PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
-	// try {
-	// PhoneNumber pn = pnu.parse(telefono, "ES");
-	// return pnu.format(pn, PhoneNumberFormat.E164);
-	// } catch (NumberParseException e) {
-	// throw new RuntimeException(e);
-	// }
-	// }
 }

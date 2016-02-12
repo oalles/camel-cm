@@ -80,8 +80,16 @@ public class CMEndpoint extends DefaultEndpoint {
 	@Override
 	public Producer createProducer() throws Exception {
 		CMConfiguration config = getConfiguration();
+
+		// This is the camel exchange processor. Allows to send messages to CM
+		// API.
+		// TODO: Should i provide a CMSender factory? Dynamically choose
+		// CMSenser implementation?
+
+		// CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
+		// checked
 		CMProducer producer = new CMProducer(this,
-				new CMSenderOneMessageImpl(CMConstants.DEFAULT_SCHEME + host, config.getProductToken(), config.getDefaultMaxNumberOfParts()),
+				new CMSenderOneMessageImpl(CMConstants.DEFAULT_SCHEME + host, config.getProductToken()),
 				config.getResponseProcessor());
 		return producer;
 	}
@@ -115,7 +123,7 @@ public class CMEndpoint extends DefaultEndpoint {
 		return host;
 	}
 
-	@ManagedOperation(description = "Dynamically modified Service HOST")
+	@ManagedOperation(description = "Dynamically modify Service HOST")
 	public void setHost(String host) {
 		this.host = host;
 	}

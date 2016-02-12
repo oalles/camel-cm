@@ -60,7 +60,7 @@ public class CMComponent extends UriEndpointComponent {
 			throw t;
 		}
 
-		LOG.trace(
+		LOG.debug(
 				"Creating endpoint uri=[{}], path=[{}], parameters=[{}]",
 				new Object[] { URISupport.sanitizeUri(uri),
 						URISupport.sanitizePath(remaining), parameters });

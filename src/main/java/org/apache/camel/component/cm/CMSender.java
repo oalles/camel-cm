@@ -1,19 +1,18 @@
 package org.apache.camel.component.cm;
 
-import org.apache.camel.component.cm.client.SMSMessage;
-import org.apache.camel.component.cm.client.SMSResponse;
+import org.apache.camel.component.cm.client.CMResponse;
 import org.apache.camel.component.cm.exceptions.MessagingException;
 
 /**
- * Send a message to CM
+ * Sends a message to CM endpoints
  *
  */
 public interface CMSender {
 
 	/**
-	 * Send SMSMessage
+	 * Sends a CMMessage to CM Endpoints.
 	 * 
 	 */
-	SMSResponse send(SMSMessage smsMessage) throws MessagingException;
+	CMResponse send(CMMessage cmMessage) throws MessagingException;
 
 }

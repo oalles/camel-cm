@@ -17,7 +17,7 @@
 	<properties>
 		<camel.osgi.export.pkg>org.apache.camel.component.cm.*</camel.osgi.export.pkg>
 		<camel.osgi.export.service>org.apache.camel.spi.ComponentResolver;component=cm</camel.osgi.export.service>
-		<google-libphonenumber>7.2.4</google-libphonenumber>
+		<google-libphonenumber>7.2.5</google-libphonenumber>
 		<httpclient>4.5.1</httpclient>
 		<jcharset.version>1.6</jcharset.version>
 	</properties>
@@ -30,10 +30,10 @@
 		</dependency>
 
 		<dependency>
-				<groupId>net.freeutils</groupId>
-				<artifactId>jcharset</artifactId>
-				<version>${jcharset.version}</version>
-			</dependency>
+			<groupId>net.freeutils</groupId>
+			<artifactId>jcharset</artifactId>
+			<version>${jcharset.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.googlecode.libphonenumber</groupId>

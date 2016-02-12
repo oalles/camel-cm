@@ -1,29 +1,46 @@
 package org.apache.camel.component.cm;
 
 /**
+ * 
+ * Valid message to serialized and sent to CM Endpoints.
+ * 
+ * Has to guarantee CM contracts.
+ * 
  * If the message only uses GSM 7-bit characters, then 160 characters will fit
  * in 1 SMS part, and 153*n characters will fit in n SMS parts for n>1.
  * 
  * If the message contains other characters, then only 70 characters will fit in
  * 1 SMS part, and 67*n characters will fit in n SMS parts for n>1.
  * 
- * http://support.telerivet.com/customer/portal/articles/1957426-multipart-
- * unicode-sms-messages
+ * <br>
+ * <br>
+ * {@link https://dashboard.onlinesmsgateway.com/docs} <br>
+ * {@link http://support.telerivet.com/customer/portal/articles/1957426-multipart-
+ * unicode-sms-messages}
  *
  */
 
 public class CMMessage {
 
-	/**
-	 * restrictions : max 32 alphanumeric chars
-	 */
-	// TODO: Allow using an ID generator.
-	private String idAsString;
-	private String message;
 	private String phoneNumber;
+	private String message;
+
+	/**
+	 * Restrictions: 1 - 32 alphanumeric characters and reference will not work
+	 * for demo accounts
+	 * 
+	 */
+	// TODO: Allow using an ID generator?
+	private String idAsString;
 	private String dynamicSender;
+
 	private boolean unicode = false;
 	private int multipart = 1;
+
+	public CMMessage(String phoneNumber, String message) {
+		this.message = message;
+		this.phoneNumber = phoneNumber;
+	}
 
 	public String getMessage() {
 		return message;
