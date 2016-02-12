@@ -25,7 +25,7 @@ CM endpoints act like a **producer** and support the following options.
 
 ### Tests
 
-Tests provided so far show a valid [Spring Configuration](https://github.com/oalles/camel-cm/blob/master/src/test/java/org/apache/camel/component/cm/test/TestConfiguration.java). Notice that CM Component URI is built from properties in a [file].(https://github.com/oalles/camel-cm/blob/master/src/test/resources/cm-smsgw.properties). 
+Tests provided so far show a valid [Spring Configuration](https://github.com/oalles/camel-cm/blob/master/src/test/java/org/apache/camel/component/cm/test/TestConfiguration.java). Notice that CM Component URI is built from properties in a [file](https://github.com/oalles/camel-cm/blob/master/src/test/resources/cm-smsgw.properties). 
 
 ### Sample of Usage
 You can try [this project](https://github.com/oalles/camel-cm-sample) to see how camel-cm can be integrated in a camel route. 
