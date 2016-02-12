@@ -19,7 +19,8 @@
 		<camel.osgi.export.service>org.apache.camel.spi.ComponentResolver;component=cm</camel.osgi.export.service>
 		<google-libphonenumber>7.2.5</google-libphonenumber>
 		<httpclient>4.5.1</httpclient>
-		<jcharset.version>1.6</jcharset.version>
+<!-- 		<jcharset.version>1.6</jcharset.version> -->
+		<jcharset.version>2.0</jcharset.version>
 	</properties>
 
 	<dependencies>

@@ -13,7 +13,7 @@ import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.ProviderHostUnavailbleException;
 import org.apache.camel.impl.DefaultProducer;
 
-import net.freeutils.charset.CCGSMCharset;
+import net.freeutils.charset.gsm.CCGSMCharset;
 
 /**
  * is the exchange processor.
@@ -34,7 +34,8 @@ public class CMProducer extends DefaultProducer {
 	 */
 	private final ResponseProcessor responseProcessor;
 
-	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
+//	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
+	private CharsetEncoder encoder = new CCGSMCharset().newEncoder();
 
 	public CMProducer(CMEndpoint endpoint, CMSender sender, ResponseProcessor responseProcessor) {
 		super(endpoint);
