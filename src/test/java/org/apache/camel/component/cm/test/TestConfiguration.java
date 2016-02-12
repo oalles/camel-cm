@@ -3,13 +3,16 @@ package org.apache.camel.component.cm.test;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 /**
- * Builds a SimpleRoute to send a message to CM GW and CM Uri is built based on properties in a file.
+ * Builds a SimpleRoute to send a message to CM GW and CM Uri is built based on
+ * properties in a file.
  */
 @Configuration("cmConfig")
 @PropertySource("classpath:/cm-smsgw.properties")
@@ -35,6 +38,13 @@ public class TestConfiguration extends SingleRouteCamelConfiguration {
 
 			}
 		};
+	}
+
+	@Bean
+	public LocalValidatorFactoryBean getValidatorFactory() {
+		LocalValidatorFactoryBean localValidatorFactoryBean = new LocalValidatorFactoryBean();
+		localValidatorFactoryBean.getValidationPropertyMap().put("hibernate.validator.fail_fast", "true");
+		return localValidatorFactoryBean;
 	}
 
 	/**

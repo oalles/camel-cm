@@ -18,9 +18,14 @@ package org.apache.camel.component.cm;
 
 import java.util.Map;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
+
+import org.apache.camel.BeanInject;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.component.cm.exceptions.InvalidURLException;
+import org.apache.camel.component.cm.exceptions.InvalidUriEndpointException;
 import org.apache.camel.impl.UriEndpointComponent;
 import org.apache.camel.util.URISupport;
 import org.apache.commons.validator.routines.UrlValidator;
@@ -32,8 +37,10 @@ import org.slf4j.LoggerFactory;
  */
 public class CMComponent extends UriEndpointComponent {
 
-	private static final Logger LOG = LoggerFactory
-			.getLogger(CMComponent.class);
+	@BeanInject
+	private Validator validator;
+
+	private static final Logger LOG = LoggerFactory.getLogger(CMComponent.class);
 
 	public CMComponent() {
 		super(CMEndpoint.class);
@@ -47,31 +54,34 @@ public class CMComponent extends UriEndpointComponent {
 	 * Endpoints factory
 	 */
 	@Override
-	protected Endpoint createEndpoint(String uri, String remaining,
-			Map<String, Object> parameters) throws Exception {
+	protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
 
 		String url = CMConstants.DEFAULT_SCHEME + remaining;
 		if (!UrlValidator.getInstance().isValid(url)) {
 			String errorMessage = String
-					.format("HOST provided: %s seem to be invalid. Remember SCHEME has to be excluded.",
-							url);
+					.format("HOST provided: %s seem to be invalid. Remember SCHEME has to be excluded.", url);
 			Exception t = new InvalidURLException(errorMessage);
 			LOG.error(errorMessage, t);
 			throw t;
 		}
 
-		LOG.debug(
-				"Creating endpoint uri=[{}], path=[{}], parameters=[{}]",
-				new Object[] { URISupport.sanitizeUri(uri),
-						URISupport.sanitizePath(remaining), parameters });
+		LOG.debug("Creating endpoint uri=[{}], path=[{}], parameters=[{}]",
+				new Object[] { URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
 
 		// Set configuration based on uri parameters
 		CMConfiguration config = new CMConfiguration();
 		setProperties(config, parameters);
 
+		// Validate configuration
+		for (ConstraintViolation<CMConfiguration> cv : validator.validate(config)) {
+			String msg = String.format("Invalid value for %s: %s", cv.getPropertyPath().toString(), cv.getMessage());
+			LOG.error(msg);
+			throw new InvalidUriEndpointException(msg);
+		}
+
 		// Component is an Endpoint factory. So far, just one Endpoint type.
 		// Endpoint construction and configuration.
-		
+
 		CMEndpoint endpoint = new CMEndpoint(uri, this);
 		endpoint.setConfiguration(config);
 		endpoint.setHost(remaining);

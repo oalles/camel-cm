@@ -1,5 +1,9 @@
 package org.apache.camel.component.cm.exceptions;
 
+/**
+ * Invalid Resource URL - CM Hosts
+ *
+ */
 public class InvalidURLException extends CMDirectException {
 
 	public InvalidURLException() {
