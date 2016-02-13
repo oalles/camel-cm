@@ -75,7 +75,7 @@ public class TestConfiguration extends SingleRouteCamelConfiguration {
 
 		// Defaults to false
 		final Boolean testConnectionOnStartup = Boolean
-				.parseBoolean(env.getProperty("testConnectionOnStartup", "false"));
+				.parseBoolean(env.getProperty("cm.testConnectionOnStartup", "false"));
 		if (testConnectionOnStartup != false) {
 			cmUri.append("&testConnectionOnStartup=").append(testConnectionOnStartup.toString());
 		}

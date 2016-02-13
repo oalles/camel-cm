@@ -1,5 +1,6 @@
 package org.apache.camel.component.cm;
 
+import java.net.SocketTimeoutException;
 import java.nio.charset.CharsetEncoder;
 
 import javax.validation.ConstraintViolation;
@@ -10,8 +11,9 @@ import org.apache.camel.component.cm.client.CMResponse;
 import org.apache.camel.component.cm.client.ResponseProcessor;
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
-import org.apache.camel.component.cm.exceptions.ProviderHostUnavailbleException;
+import org.apache.camel.component.cm.exceptions.ProviderHostUnavailableException;
 import org.apache.camel.impl.DefaultProducer;
+import org.jsoup.Jsoup;
 
 import net.freeutils.charset.gsm.CCGSMCharset;
 
@@ -34,7 +36,8 @@ public class CMProducer extends DefaultProducer {
 	 */
 	private final ResponseProcessor responseProcessor;
 
-//	private CharsetEncoder encoder = CCGSMCharset.forName("CCGSM").newEncoder();
+	// private CharsetEncoder encoder =
+	// CCGSMCharset.forName("CCGSM").newEncoder();
 	private CharsetEncoder encoder = new CCGSMCharset().newEncoder();
 
 	public CMProducer(CMEndpoint endpoint, CMSender sender, ResponseProcessor responseProcessor) {
@@ -120,8 +123,11 @@ public class CMProducer extends DefaultProducer {
 		CMConfiguration configuration = getConfiguration();
 
 		if (configuration.isTestConnectionOnStartup()) {
-			// TODO: How to test? Does it make sense?
-			throw new ProviderHostUnavailbleException();
+			try {
+				Jsoup.connect(getEndpoint().getCMUrl()).get();
+			} catch (Exception e) {
+				throw new ProviderHostUnavailableException();
+			}
 		}
 
 		// TODO: Entiendo que deberia fijar este valor donde haga la extension

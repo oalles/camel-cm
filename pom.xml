@@ -19,8 +19,9 @@
 		<camel.osgi.export.service>org.apache.camel.spi.ComponentResolver;component=cm</camel.osgi.export.service>
 		<google-libphonenumber>7.2.5</google-libphonenumber>
 		<httpclient>4.5.1</httpclient>
-<!-- 		<jcharset.version>1.6</jcharset.version> -->
+		<!-- <jcharset.version>1.6</jcharset.version> -->
 		<jcharset.version>2.0</jcharset.version>
+		<jsoup>1.8.3</jsoup>
 	</properties>
 
 	<dependencies>
@@ -47,6 +48,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>${httpclient}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>${jsoup}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -58,7 +64,7 @@
 			<artifactId>javax.el-api</artifactId>
 			<version>2.2.4</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-validator</artifactId>

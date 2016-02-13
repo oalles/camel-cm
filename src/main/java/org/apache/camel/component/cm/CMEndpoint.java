@@ -89,7 +89,7 @@ public class CMEndpoint extends DefaultEndpoint {
 		// CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
 		// checked
 		CMProducer producer = new CMProducer(this,
-				new CMSenderOneMessageImpl(CMConstants.DEFAULT_SCHEME + host, config.getProductToken()),
+				new CMSenderOneMessageImpl(getCMUrl(), config.getProductToken()),
 				config.getResponseProcessor());
 		return producer;
 	}
@@ -121,6 +121,10 @@ public class CMEndpoint extends DefaultEndpoint {
 	@ManagedAttribute
 	public String getHost() {
 		return host;
+	}
+
+	public String getCMUrl() {
+		return CMConstants.DEFAULT_SCHEME + host;
 	}
 
 	@ManagedOperation(description = "Dynamically modify Service HOST")
