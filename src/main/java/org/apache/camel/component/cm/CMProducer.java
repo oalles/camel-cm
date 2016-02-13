@@ -1,6 +1,5 @@
 package org.apache.camel.component.cm;
 
-import java.net.SocketTimeoutException;
 import java.nio.charset.CharsetEncoder;
 
 import javax.validation.ConstraintViolation;
@@ -124,18 +123,13 @@ public class CMProducer extends DefaultProducer {
 
 		if (configuration.isTestConnectionOnStartup()) {
 			try {
+				log.debug("Checking connection - {}", getEndpoint().getCMUrl());
 				Jsoup.connect(getEndpoint().getCMUrl()).get();
+				log.info("Connection to {}: OK", getEndpoint().getCMUrl());
 			} catch (Exception e) {
 				throw new ProviderHostUnavailableException(e);
 			}
 		}
-
-		// TODO: Entiendo que deberia fijar este valor donde haga la extension
-		// de SMSMessage a CMMessage (To be serialized)
-		// String defaultSender = configuration.getDefaultFrom();
-		// if (defaultSender == null || defaultSender.isEmpty()) {
-		// // TODO: Default Sender set in the account? Do anything?
-		// }
 
 		// keep starting
 		super.doStart();
