@@ -126,7 +126,7 @@ public class CMProducer extends DefaultProducer {
 			try {
 				Jsoup.connect(getEndpoint().getCMUrl()).get();
 			} catch (Exception e) {
-				throw new ProviderHostUnavailableException();
+				throw new ProviderHostUnavailableException(e);
 			}
 		}
 
