@@ -68,7 +68,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			CMResponse cmResponse = buildSMSResponse(response);
 			return cmResponse;
 		} catch (RuntimeException e) {
-			LOG.error("Imposible enviar sms: ", e);
+			LOG.error("Failed to send SMS: {}", cmMessage, e);
 			throw new MessagingException(e);
 		}
 	}
@@ -120,7 +120,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 			toElement.appendChild(doc.createTextNode(message.getPhoneNumber()));
 			msgElement.appendChild(toElement);
 
-			// <DCS>VALUE</DCS> - Si es UNICODE - messageOut.isGSM338Enc
+			// <DCS>VALUE</DCS> - if UNICODE - messageOut.isGSM338Enc
 			// false
 			if (message.isUnicode()) {
 				Element dcsElement = doc.createElement("DCS");
@@ -128,8 +128,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 				msgElement.appendChild(dcsElement);
 			}
 
-			// <REFERENCE>VALUE</REFERENCE> -Es MI ID de mensajes(12 bytes)
-			// como string - Limite 32 caracteres.
+			// <REFERENCE>VALUE</REFERENCE> -Alfanum
 			String id = message.getIdAsString();
 			if (id != null && !id.isEmpty()) {
 				Element refElement = doc.createElement("REFERENCE");
@@ -157,10 +156,10 @@ public class CMSenderOneMessageImpl implements CMSender {
 			aTransformer.transform(src, dest);
 			return xml.toString();
 		} catch (TransformerException e) {
-			LOG.error("Imposible construir XML para SMS: ", e);
+			LOG.error("Cant serialize CMMessage {}: ", message, e);
 			throw new XMLConstructionException(e);
 		} catch (ParserConfigurationException e) {
-			LOG.error("Imposible construir XML para SMS: ", e);
+			LOG.error("Cant serialize CMMessage {}: ", message, e);
 			throw new XMLConstructionException(e);
 		}
 	}
@@ -194,6 +193,6 @@ public class CMSenderOneMessageImpl implements CMSender {
 
 	// TODO
 	private CMResponse buildSMSResponse(String response) {
-		return null;
+		return new CMResponse();
 	}
 }
