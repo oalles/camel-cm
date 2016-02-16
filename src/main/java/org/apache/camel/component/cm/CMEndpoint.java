@@ -35,104 +35,105 @@ import org.slf4j.LoggerFactory;
 // label = "sms provider", producerOnly = true)
 public class CMEndpoint extends DefaultEndpoint {
 
-	private static final Logger LOG = LoggerFactory.getLogger(CMEndpoint.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CMEndpoint.class);
 
-	// TODO: SYNC request to CM host. See ResponseProcessor.
+    // TODO: SYNC request to CM host. See ResponseProcessor.
 
-	@UriPath
-	@Metadata(description = "SMS Provider HOST with scheme", required = "true")
-	private String host;
+    @UriPath
+    @Metadata(description = "SMS Provider HOST with scheme", required = "true")
+    private String host;
 
-	/**
-	 * data needed for exchange interaction
-	 */
-	private CMConfiguration configuration;
+    /**
+     * data needed for exchange interaction
+     */
+    private CMConfiguration configuration;
 
-	/**
-	 * Constructs a partially-initialized CMEndpoint instance. Useful when
-	 * creating endpoints manually (e.g., as beans in Spring).
-	 */
-	// We are just going to allow fully initialized endpoint instances
-	// public CMEndpoint() {
-	// }
+    /**
+     * Constructs a partially-initialized CMEndpoint instance. Useful when
+     * creating endpoints manually (e.g., as beans in Spring).
+     */
+    // We are just going to allow fully initialized endpoint instances
+    // public CMEndpoint() {
+    // }
 
-	/**
-	 * Constructs a fully-initialized CMEndpoint instance. This is the preferred
-	 * method of constructing an object from Java code (as opposed to Spring
-	 * beans, etc.).
-	 * 
-	 * @param endpointUri
-	 *            the full URI used to create this endpoint
-	 * @param component
-	 *            the component that created this endpoint
-	 */
-	public CMEndpoint(String uri, CMComponent component) {
-		super(uri, component);
+    /**
+     * Constructs a fully-initialized CMEndpoint instance. This is the preferred
+     * method of constructing an object from Java code (as opposed to Spring
+     * beans, etc.).
+     * 
+     * @param endpointUri
+     *            the full URI used to create this endpoint
+     * @param component
+     *            the component that created this endpoint
+     */
+    public CMEndpoint(String uri, CMComponent component) {
+        super(uri, component);
 
-		// SYNC Request + CMResponse Processing.
-		this.setExchangePattern(ExchangePattern.InOut);
-		LOG.info("+ CM - Endpoint created.");
-	}
+        // SYNC Request + CMResponse Processing.
+        setExchangePattern(ExchangePattern.InOut);
+        LOG.info("+ CM - Endpoint created.");
+    }
 
-	/**
-	 * Provides a channel on which clients can send Messages to a CM Endpoint
-	 */
-	@Override
-	public Producer createProducer() throws Exception {
-		CMConfiguration config = getConfiguration();
+    /**
+     * Provides a channel on which clients can send Messages to a CM Endpoint
+     */
+    @Override
+    public Producer createProducer() throws Exception {
+        CMConfiguration config = getConfiguration();
 
-		// This is the camel exchange processor. Allows to send messages to CM
-		// API.
-		// TODO: Should i provide a CMSender factory? Dynamically choose
-		// CMSenser implementation?
+        // This is the camel exchange processor. Allows to send messages to CM
+        // API.
+        // TODO: Should i provide a CMSender factory? Dynamically choose
+        // CMSenser implementation?
 
-		// CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
-		// checked
-		CMProducer producer = new CMProducer(this,
-				new CMSenderOneMessageImpl(getCMUrl(), config.getProductToken()),
-				config.getResponseProcessor());
-		return producer;
-	}
+        // CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
+        // checked
+        CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(
+                getCMUrl(), config.getProductToken()));
+        return producer;
+    }
 
-	@Override
-	public Consumer createConsumer(Processor processor) throws Exception {
+    @Override
+    public Consumer createConsumer(Processor processor) throws Exception {
 
-		throw new RuntimeCamelException("So far, cannot consume from CM Endpoint: " + getEndpointUri());
-	}
+        throw new RuntimeCamelException(
+                "So far, cannot consume from CM Endpoint: " + getEndpointUri());
+    }
 
-	public CMConfiguration getConfiguration() {
-		return configuration;
-	}
+    public CMConfiguration getConfiguration() {
+        return configuration;
+    }
 
-	public void setConfiguration(CMConfiguration configuration) {
-		this.configuration = configuration;
-	}
+    public void setConfiguration(CMConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
-	@Override
-	public boolean isSingleton() {
-		return true;
-	}
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
 
-	// @Override
-	// public Exchange createExchange() {
-	// return super.createExchange();
-	// }
+    // @Override
+    // public Exchange createExchange() {
+    // return super.createExchange();
+    // }
 
-	@ManagedAttribute
-	public String getHost() {
-		return host;
-	}
+    @ManagedAttribute
+    public String getHost() {
+        return host;
+    }
 
-	public String getCMUrl() {
-		return CMConstants.DEFAULT_SCHEME + host;
-	}
+    public String getCMUrl() {
+        return CMConstants.DEFAULT_SCHEME + host;
+    }
 
-	@ManagedOperation(description = "Dynamically modify Service HOST")
-	public void setHost(String host) {
-		this.host = host;
-	}
+    @ManagedOperation(description = "Dynamically modify Service HOST")
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public CMComponent getComponent() {
-		return (CMComponent) super.getComponent();
-	}
+    @Override
+    public CMComponent getComponent() {
+        return (CMComponent) super.getComponent();
+    }
 }

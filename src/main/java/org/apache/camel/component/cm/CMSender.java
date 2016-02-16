@@ -1,6 +1,5 @@
 package org.apache.camel.component.cm;
 
-import org.apache.camel.component.cm.client.CMResponse;
 import org.apache.camel.component.cm.exceptions.MessagingException;
 
 /**
@@ -9,10 +8,10 @@ import org.apache.camel.component.cm.exceptions.MessagingException;
  */
 public interface CMSender {
 
-	/**
-	 * Sends a CMMessage to CM Endpoints.
-	 * 
-	 */
-	CMResponse send(CMMessage cmMessage) throws MessagingException;
+    /**
+     * Sends a CMMessage to CM Endpoints.
+     * 
+     */
+    void send(CMMessage cmMessage) throws MessagingException;
 
 }
