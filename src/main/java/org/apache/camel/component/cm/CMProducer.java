@@ -10,6 +10,8 @@ import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.ProviderHostUnavailableException;
 import org.apache.camel.impl.DefaultProducer;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.HttpClientBuilder;
 
 import net.freeutils.charset.gsm.CCGSMCharset;
 
@@ -113,7 +115,8 @@ public class CMProducer extends DefaultProducer {
         if (configuration.isTestConnectionOnStartup()) {
             try {
                 log.debug("Checking connection - {}", getEndpoint().getCMUrl());
-                // Jsoup.connect(getEndpoint().getCMUrl()).get();
+                HttpClientBuilder.create().build()
+                        .execute(new HttpHead(getEndpoint().getCMUrl()));
                 log.info("Connection to {}: OK", getEndpoint().getCMUrl());
             } catch (Exception e) {
                 throw new ProviderHostUnavailableException(e);
@@ -180,4 +183,5 @@ public class CMProducer extends DefaultProducer {
         }
         return validator;
     }
+
 }
