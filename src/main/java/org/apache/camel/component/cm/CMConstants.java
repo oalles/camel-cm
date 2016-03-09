@@ -15,4 +15,6 @@ public interface CMConstants {
     public static final String ERROR_INSUFICIENT_BALANCE = "Insufficient balance";
     public static final String ERROR_UNROUTABLE_MESSAGE = "Message is unroutable";
     public static final String ERROR_INVALID_PRODUCT_TOKEN = "Invalid product token";
+
+    public static final String GSM_CHARACTERS_REGEX = "^[A-Za-z0-9 \\r\\n@£$¥èéùìòÇØøÅå\u0394_\u03A6\u0393\u039B\u03A9\u03A0\u03A8\u03A3\u0398\u039EÆæßÉ!\"#$%&amp;'()*+,\\-./:;&lt;=&gt;?¡ÄÖÑÜ§¿äöñüà^{}\\\\\\[~\\]|\u20AC]*$";
 }

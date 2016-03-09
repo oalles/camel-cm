@@ -1,7 +1,5 @@
 package org.apache.camel.component.cm;
 
-import java.nio.charset.CharsetEncoder;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
@@ -12,8 +10,6 @@ import org.apache.camel.component.cm.exceptions.ProviderHostUnavailableException
 import org.apache.camel.impl.DefaultProducer;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.HttpClientBuilder;
-
-import net.freeutils.charset.gsm.CCGSMCharset;
 
 /**
  * is the exchange processor.
@@ -31,7 +27,7 @@ public class CMProducer extends DefaultProducer {
 
     // private CharsetEncoder encoder =
     // CCGSMCharset.forName("CCGSM").newEncoder();
-    private CharsetEncoder encoder = new CCGSMCharset().newEncoder();
+    // private CharsetEncoder encoder = new CCGSMCharset().newEncoder();
 
     public CMProducer(CMEndpoint endpoint, CMSender sender) {
         super(endpoint);
@@ -139,7 +135,8 @@ public class CMProducer extends DefaultProducer {
     }
 
     private boolean isGsm0338Encodeable(String message) {
-        return encoder.canEncode(message);
+        // return encoder.canEncode(message);
+        return message.matches(CMConstants.GSM_CHARACTERS_REGEX);
     }
 
     private void setUnicodeAndMultipart(CMMessage message) {
