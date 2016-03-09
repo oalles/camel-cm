@@ -25,10 +25,6 @@ public class CMProducer extends DefaultProducer {
      */
     private final CMSender sender;
 
-    // private CharsetEncoder encoder =
-    // CCGSMCharset.forName("CCGSM").newEncoder();
-    // private CharsetEncoder encoder = new CCGSMCharset().newEncoder();
-
     public CMProducer(CMEndpoint endpoint, CMSender sender) {
         super(endpoint);
         this.sender = sender;
@@ -135,7 +131,6 @@ public class CMProducer extends DefaultProducer {
     }
 
     private boolean isGsm0338Encodeable(String message) {
-        // return encoder.canEncode(message);
         return message.matches(CMConstants.GSM_CHARACTERS_REGEX);
     }
 
