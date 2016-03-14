@@ -1,3 +1,19 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.camel.component.cm;
 
 import java.util.UUID;
@@ -43,13 +59,13 @@ public class CMConfiguration {
     private int defaultMaxNumberOfParts = 8;
 
     @UriParam
-    private boolean testConnectionOnStartup = false;
+    private boolean testConnectionOnStartup;
 
     public UUID getProductToken() {
         return productToken;
     }
 
-    public void setProductToken(String tokenAsString) {
+    public void setProductToken(final String tokenAsString) {
         productToken = UUID.fromString(tokenAsString);
     }
 
@@ -57,7 +73,7 @@ public class CMConfiguration {
         return defaultFrom;
     }
 
-    public void setDefaultFrom(String defaultFrom) {
+    public void setDefaultFrom(final String defaultFrom) {
         this.defaultFrom = defaultFrom;
     }
 
@@ -65,7 +81,7 @@ public class CMConfiguration {
         return defaultMaxNumberOfParts;
     }
 
-    public void setDefaultMaxNumberOfParts(int defaultMaxNumberOfParts) {
+    public void setDefaultMaxNumberOfParts(final int defaultMaxNumberOfParts) {
         this.defaultMaxNumberOfParts = defaultMaxNumberOfParts;
     }
 
@@ -73,11 +89,11 @@ public class CMConfiguration {
         return testConnectionOnStartup;
     }
 
-    public void setTestConnectionOnStartup(boolean testConnectionOnStartup) {
+    public void setTestConnectionOnStartup(final boolean testConnectionOnStartup) {
         this.testConnectionOnStartup = testConnectionOnStartup;
     }
 
-    public void setProductToken(UUID productToken) {
+    public void setProductToken(final UUID productToken) {
         this.productToken = productToken;
     }
 }

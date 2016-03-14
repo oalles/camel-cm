@@ -37,59 +37,58 @@ import org.slf4j.LoggerFactory;
  */
 public class CMComponent extends UriEndpointComponent {
 
-	@BeanInject
-	private Validator validator;
+    private static final Logger LOG = LoggerFactory.getLogger(CMComponent.class);
 
-	public Validator getValidator() {
-		return validator;
-	}
+    @BeanInject
+    private Validator validator;
 
-	private static final Logger LOG = LoggerFactory.getLogger(CMComponent.class);
+    public CMComponent() {
+        super(CMEndpoint.class);
+    }
 
-	public CMComponent() {
-		super(CMEndpoint.class);
-	}
+    public CMComponent(final CamelContext context) {
+        super(context, CMEndpoint.class);
+    }
 
-	public CMComponent(CamelContext context) {
-		super(context, CMEndpoint.class);
-	}
+    /**
+     * Endpoints factory
+     */
+    @Override
+    protected Endpoint createEndpoint(final String uri, final String remaining, final Map<String, Object> parameters) throws Exception {
 
-	/**
-	 * Endpoints factory
-	 */
-	@Override
-	protected Endpoint createEndpoint(String uri, String remaining, Map<String, Object> parameters) throws Exception {
+        final String url = CMConstants.DEFAULT_SCHEME + remaining;
+        if (!UrlValidator.getInstance().isValid(url)) {
+            final String errorMessage = String.format("HOST provided: %s seem to be invalid. Remember SCHEME has to be excluded.", url);
+            final Exception t = new InvalidURLException(errorMessage);
+            LOG.error(errorMessage, t);
+            throw t;
+        }
 
-		String url = CMConstants.DEFAULT_SCHEME + remaining;
-		if (!UrlValidator.getInstance().isValid(url)) {
-			String errorMessage = String
-					.format("HOST provided: %s seem to be invalid. Remember SCHEME has to be excluded.", url);
-			Exception t = new InvalidURLException(errorMessage);
-			LOG.error(errorMessage, t);
-			throw t;
-		}
+        LOG.debug("Creating endpoint uri=[{}], path=[{}], parameters=[{}]", new Object[] {URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters});
 
-		LOG.debug("Creating endpoint uri=[{}], path=[{}], parameters=[{}]",
-				new Object[] { URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
+        // Set configuration based on uri parameters
+        final CMConfiguration config = new CMConfiguration();
+        setProperties(config, parameters);
 
-		// Set configuration based on uri parameters
-		CMConfiguration config = new CMConfiguration();
-		setProperties(config, parameters);
+        // Validate configuration
+        for (final ConstraintViolation<CMConfiguration> cv : validator.validate(config)) {
+            final String msg = String.format("Invalid value for %s: %s", cv.getPropertyPath().toString(), cv.getMessage());
+            LOG.error(msg);
+            throw new InvalidUriEndpointException(msg);
+        }
 
-		// Validate configuration
-		for (ConstraintViolation<CMConfiguration> cv : validator.validate(config)) {
-			String msg = String.format("Invalid value for %s: %s", cv.getPropertyPath().toString(), cv.getMessage());
-			LOG.error(msg);
-			throw new InvalidUriEndpointException(msg);
-		}
+        // Component is an Endpoint factory. So far, just one Endpoint type.
+        // Endpoint construction and configuration.
 
-		// Component is an Endpoint factory. So far, just one Endpoint type.
-		// Endpoint construction and configuration.
+        final CMEndpoint endpoint = new CMEndpoint(uri, this);
+        endpoint.setConfiguration(config);
+        endpoint.setHost(remaining);
 
-		CMEndpoint endpoint = new CMEndpoint(uri, this);
-		endpoint.setConfiguration(config);
-		endpoint.setHost(remaining);
+        return endpoint;
+    }
 
-		return endpoint;
-	}
+    public Validator getValidator() {
+        return validator;
+    }
+
 }

@@ -1,3 +1,19 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.camel.component.cm;
 
 import javax.validation.ConstraintViolation;
@@ -25,7 +41,7 @@ public class CMProducer extends DefaultProducer {
      */
     private final CMSender sender;
 
-    public CMProducer(CMEndpoint endpoint, CMSender sender) {
+    public CMProducer(final CMEndpoint endpoint, final CMSender sender) {
         super(endpoint);
         this.sender = sender;
     }
@@ -39,6 +55,7 @@ public class CMProducer extends DefaultProducer {
      * endpoints. 3. Process response from CM endpoints.
      *
      */
+    @Override
     public void process(final Exchange exchange) {
 
         try {
@@ -47,15 +64,15 @@ public class CMProducer extends DefaultProducer {
             // implementation? Can i choose CMSender impl via factory?
 
             // Immutable message receive from clients.
-            SMSMessage smsMessage = exchange.getIn().getBody(SMSMessage.class);
+            final SMSMessage smsMessage = exchange.getIn().getBody(SMSMessage.class);
             if (smsMessage == null) {
                 throw new ClassCastException();
             }
 
             // Validate configuration
-            for (ConstraintViolation<SMSMessage> cv : getValidator()
+            for (final ConstraintViolation<SMSMessage> cv : getValidator()
                     .validate(smsMessage)) {
-                String msg = String.format("Invalid value for %s: %s",
+                final String msg = String.format("Invalid value for %s: %s",
                         cv.getPropertyPath().toString(), cv.getMessage());
                 log.error(msg);
                 throw new InvalidPayloadException(msg);
@@ -64,7 +81,7 @@ public class CMProducer extends DefaultProducer {
             // We have a valid SMSMessage instance, lets extend to CMMessage
             // This is the instance we will use to build the XML document to be
             // sent to CM SMS GW.
-            CMMessage cmMessage = new CMMessage(smsMessage.getPhoneNumber(),
+            final CMMessage cmMessage = new CMMessage(smsMessage.getPhoneNumber(),
                     smsMessage.getMessage());
 
             if (smsMessage.getDynamicFrom() == null
@@ -83,11 +100,11 @@ public class CMProducer extends DefaultProducer {
             sender.send(cmMessage);
 
             log.info("The request was accepted");
-        } catch (ClassCastException e) {
-            String m = "Check in message body - Has to be an instance of SMSMessage";
+        } catch (final ClassCastException e) {
+            final String m = "Check in message body - Has to be an instance of SMSMessage";
             log.error(m, e);
             exchange.setException(new InvalidPayloadException(m));
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             log.error("Cannot send the message ", e);
             // Body hast to be an instance of SMSMessage
             exchange.setException(new InvalidPayloadException(e));
@@ -102,7 +119,7 @@ public class CMProducer extends DefaultProducer {
 
         log.debug("Starting CMProducer");
 
-        CMConfiguration configuration = getConfiguration();
+        final CMConfiguration configuration = getConfiguration();
 
         if (configuration.isTestConnectionOnStartup()) {
             try {
@@ -110,7 +127,7 @@ public class CMProducer extends DefaultProducer {
                 HttpClientBuilder.create().build()
                         .execute(new HttpHead(getEndpoint().getCMUrl()));
                 log.info("Connection to {}: OK", getEndpoint().getCMUrl());
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 throw new ProviderHostUnavailableException(e);
             }
         }
@@ -130,24 +147,24 @@ public class CMProducer extends DefaultProducer {
         return getEndpoint().getConfiguration();
     }
 
-    private boolean isGsm0338Encodeable(String message) {
+    private boolean isGsm0338Encodeable(final String message) {
         return message.matches(CMConstants.GSM_CHARACTERS_REGEX);
     }
 
-    private void setUnicodeAndMultipart(CMMessage message) {
+    private void setUnicodeAndMultipart(final CMMessage message) {
 
         final int defaultMaxNumberOfParts = getConfiguration()
                 .getDefaultMaxNumberOfParts();
 
         // Set UNICODE and MULTIPART
-        String msg = message.getMessage();
+        final String msg = message.getMessage();
         if (isGsm0338Encodeable(msg)) {
 
             // Not Unicode is Multipart?
             if (msg.length() > CMConstants.MAX_GSM_MESSAGE_LENGTH) {
 
                 // Multiparts. 153 caracteres max per part
-                int parts = msg.length()
+                final int parts = msg.length()
                         % CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
 
                 message.setMultiparts((parts > defaultMaxNumberOfParts)
@@ -160,7 +177,7 @@ public class CMProducer extends DefaultProducer {
             if (msg.length() > CMConstants.MAX_UNICODE_MESSAGE_LENGTH) {
 
                 // Multiparts. 67 caracteres max per part
-                int parts = msg.length()
+                final int parts = msg.length()
                         % CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
 
                 message.setMultiparts((parts > defaultMaxNumberOfParts)

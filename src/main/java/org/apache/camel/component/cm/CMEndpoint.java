@@ -60,13 +60,13 @@ public class CMEndpoint extends DefaultEndpoint {
      * Constructs a fully-initialized CMEndpoint instance. This is the preferred
      * method of constructing an object from Java code (as opposed to Spring
      * beans, etc.).
-     * 
+     *
      * @param endpointUri
      *            the full URI used to create this endpoint
      * @param component
      *            the component that created this endpoint
      */
-    public CMEndpoint(String uri, CMComponent component) {
+    public CMEndpoint(final String uri, final CMComponent component) {
         super(uri, component);
 
         // SYNC Request + CMResponse Processing.
@@ -79,7 +79,7 @@ public class CMEndpoint extends DefaultEndpoint {
      */
     @Override
     public Producer createProducer() throws Exception {
-        CMConfiguration config = getConfiguration();
+        final CMConfiguration config = getConfiguration();
 
         // This is the camel exchange processor. Allows to send messages to CM
         // API.
@@ -88,13 +88,13 @@ public class CMEndpoint extends DefaultEndpoint {
 
         // CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
         // checked
-        CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(
+        final CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(
                 getCMUrl(), config.getProductToken()));
         return producer;
     }
 
     @Override
-    public Consumer createConsumer(Processor processor) throws Exception {
+    public Consumer createConsumer(final Processor processor) throws Exception {
 
         throw new RuntimeCamelException(
                 "So far, cannot consume from CM Endpoint: " + getEndpointUri());
@@ -104,7 +104,7 @@ public class CMEndpoint extends DefaultEndpoint {
         return configuration;
     }
 
-    public void setConfiguration(CMConfiguration configuration) {
+    public void setConfiguration(final CMConfiguration configuration) {
         this.configuration = configuration;
     }
 
@@ -128,7 +128,7 @@ public class CMEndpoint extends DefaultEndpoint {
     }
 
     @ManagedOperation(description = "Dynamically modify Service HOST")
-    public void setHost(String host) {
+    public void setHost(final String host) {
         this.host = host;
     }
 

@@ -1,3 +1,19 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.apache.camel.component.cm.test;
 
 import java.util.Set;
@@ -11,8 +27,6 @@ import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
@@ -28,46 +42,44 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class E164Tests extends AbstractJUnit4SpringContextTests {
 
-	// dependency: camel-spring-javaconfig
+    // dependency: camel-spring-javaconfig
 
-	private Logger LOG = LoggerFactory.getLogger(E164Tests.class);
+    @Autowired
+    private Validator validator;
 
-	@Autowired
-	private Validator validator;
+    private final PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
 
-	private PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
+    @Before
+    public void beforeTest() throws Exception {
+    }
 
-	@Before
-	public void beforeTest() throws Exception {
-	}
+    @Test
+    public void testE164IsValid() throws Exception {
 
-	@Test
-	public void testE164IsValid() throws Exception {
+        final String phoneNumber = "+34600000000";
+        final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
 
-		String phoneNumber = "+34600000000";
-		SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+        final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
+        Assert.isTrue(0 == constraintViolations.size());
+    }
 
-		Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
-		Assert.isTrue(0 == constraintViolations.size());
-	}
-	
-	@Test
-	public void testNoPlusSignIsInvalid() throws Exception {
+    @Test
+    public void testNoPlusSignIsInvalid() throws Exception {
 
-		String phoneNumber = "34600000000";
-		SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+        final String phoneNumber = "34600000000";
+        final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
 
-		Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
-		Assert.isTrue(1 == constraintViolations.size());
-	}
-	
-	@Test
-	public void testNumberWithPlusSignIsInvalid() throws Exception {
+        final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
+        Assert.isTrue(1 == constraintViolations.size());
+    }
 
-		String phoneNumber = "+34 600 00 00 00";
-		SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+    @Test
+    public void testNumberWithPlusSignIsInvalid() throws Exception {
 
-		Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
-		Assert.isTrue(1 == constraintViolations.size());
-	}
+        final String phoneNumber = "+34 600 00 00 00";
+        final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+
+        final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
+        Assert.isTrue(1 == constraintViolations.size());
+    }
 }
