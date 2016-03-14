@@ -33,6 +33,8 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.util.Assert;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber.CountryCodeSource;
 
 @RunWith(CamelSpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { TestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
@@ -54,6 +56,16 @@ public class E164Tests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void testNullNumberIsValid() throws Exception {
+
+        final String phoneNumber = null;
+        final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+
+        final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
+        Assert.isTrue(0 == constraintViolations.size());
+    }
+
+    @Test
     public void testE164IsValid() throws Exception {
 
         final String phoneNumber = "+34600000000";
@@ -64,9 +76,19 @@ public class E164Tests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testNoPlusSignIsInvalid() throws Exception {
+    public void testNoPlusSignedNumberIsInvalid() throws Exception {
 
         final String phoneNumber = "34600000000";
+        final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+
+        final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
+        Assert.isTrue(1 == constraintViolations.size());
+    }
+
+    @Test
+    public void testNoPlusSignedNumberBut00IsInvalid() throws Exception {
+
+        final String phoneNumber = new PhoneNumber().setCountryCodeSource(CountryCodeSource.FROM_NUMBER_WITHOUT_PLUS_SIGN).setNationalNumber(0034600000000).toString();
         final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
