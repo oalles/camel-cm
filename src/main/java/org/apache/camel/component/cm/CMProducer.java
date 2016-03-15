@@ -74,7 +74,7 @@ public class CMProducer extends DefaultProducer {
                 throw new InvalidPayloadException(msg.toString());
             }
 
-            // We have a valid SMSMessage instance, lets extend to CMMessage
+            // We have a valid (immutable) SMSMessage instance, lets extend to CMMessage
             // This is the instance we will use to build the XML document to be
             // sent to CM SMS GW.
             final CMMessage cmMessage = new CMMessage(smsMessage.getPhoneNumber(), smsMessage.getMessage());
@@ -83,7 +83,7 @@ public class CMProducer extends DefaultProducer {
                 cmMessage.setDynamicSender(getConfiguration().getDefaultFrom());
             }
 
-            // Can be null
+            // Remember, this can be null.
             cmMessage.setIdAsString(smsMessage.getIdAsString());
 
             // Unicode and multipart
@@ -140,17 +140,14 @@ public class CMProducer extends DefaultProducer {
         return getEndpoint().getConfiguration();
     }
 
-    private boolean isGsm0338Encodeable(final String message) {
-        return message.matches(CMConstants.GSM_CHARACTERS_REGEX);
-    }
-
     private void setUnicodeAndMultipart(final CMMessage message) {
 
+        // Defaults to 8
         final int defaultMaxNumberOfParts = getConfiguration().getDefaultMaxNumberOfParts();
 
         // Set UNICODE and MULTIPART
         final String msg = message.getMessage();
-        if (isGsm0338Encodeable(msg)) {
+        if (CMUtils.isGsm0338Encodeable(msg)) {
 
             // Not Unicode is Multipart?
             if (msg.length() > CMConstants.MAX_GSM_MESSAGE_LENGTH) {
