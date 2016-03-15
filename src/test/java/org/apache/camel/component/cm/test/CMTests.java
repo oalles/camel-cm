@@ -20,6 +20,7 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ResolveEndpointFailedException;
+import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.component.cm.CMEndpoint;
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
@@ -52,6 +53,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.util.Assert;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
@@ -254,6 +256,22 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         // Body
         final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
         cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = RuntimeCamelException.class)
+    public void testCMEndpointIsForProducing() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.createConsumer(null);
+    }
+
+    @Test
+    public void testCMEndpointGetHost() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        Assert.isTrue(endpoint.getHost().equals(applicationContext.getEnvironment().getRequiredProperty("cm.url")));
     }
 
     // @Test(expected = RuntimeException.class)
