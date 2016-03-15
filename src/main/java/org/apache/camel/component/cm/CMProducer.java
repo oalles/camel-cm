@@ -39,7 +39,7 @@ public class CMProducer extends DefaultProducer {
     /**
      * sends a valid message to CM endpoints.
      */
-    private final CMSender sender;
+    private CMSender sender;
 
     public CMProducer(final CMEndpoint endpoint, final CMSender sender) {
         super(endpoint);
@@ -176,6 +176,14 @@ public class CMProducer extends DefaultProducer {
             validator = getEndpoint().getComponent().getValidator();
         }
         return validator;
+    }
+
+    public CMSender getSender() {
+        return sender;
+    }
+
+    public void setSender(CMSender sender) {
+        this.sender = sender;
     }
 
 }

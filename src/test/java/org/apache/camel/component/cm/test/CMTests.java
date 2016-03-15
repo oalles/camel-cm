@@ -20,10 +20,28 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ResolveEndpointFailedException;
+import org.apache.camel.component.cm.CMEndpoint;
 import org.apache.camel.component.cm.client.SMSMessage;
 import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.InvalidURLException;
+import org.apache.camel.component.cm.exceptions.cmresponse.CMResponseException;
+import org.apache.camel.component.cm.exceptions.cmresponse.InsufficientBalanceException;
+import org.apache.camel.component.cm.exceptions.cmresponse.InvalidMSISDNException;
+import org.apache.camel.component.cm.exceptions.cmresponse.InvalidProductTokenException;
 import org.apache.camel.component.cm.exceptions.cmresponse.NoAccountFoundForProductTokenException;
+import org.apache.camel.component.cm.exceptions.cmresponse.NoMessageException;
+import org.apache.camel.component.cm.exceptions.cmresponse.NotPhoneNumberFoundException;
+import org.apache.camel.component.cm.exceptions.cmresponse.UnknownErrorException;
+import org.apache.camel.component.cm.exceptions.cmresponse.UnroutableMessageException;
+import org.apache.camel.component.cm.test.mocks.cmsender.CMResponseExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.InsufficientBalanceExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.InvalidMSISDNExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.InvalidProductTokenExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.NoAccountFoundForProductTokenExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.NoMessageExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.NotPhoneNumberFoundExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.UnknownErrorExceptionSender;
+import org.apache.camel.component.cm.test.mocks.cmsender.UnroutableMessageExceptionSender;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringDelegatingTestContextLoader;
 import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
@@ -64,7 +82,6 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     @Before
     public void beforeTest() throws Exception {
         mock.reset();
-
         camelContext.startRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
     }
 
@@ -125,6 +142,114 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     // @DirtiesContext
     @Test(expected = NoAccountFoundForProductTokenException.class)
     public void testAsPartOfARoute() throws Exception {
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = NoAccountFoundForProductTokenException.class)
+    public void testNoAccountFoundForProductTokenException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new NoAccountFoundForProductTokenExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = CMResponseException.class)
+    public void testCMResponseException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new CMResponseExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = InsufficientBalanceException.class)
+    public void testInsufficientBalanceException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new InsufficientBalanceExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = InvalidMSISDNException.class)
+    public void testInvalidMSISDNException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new InvalidMSISDNExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = InvalidProductTokenException.class)
+    public void testInvalidProductTokenException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new InvalidProductTokenExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = NoMessageException.class)
+    public void testNoMessageException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new NoMessageExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = NotPhoneNumberFoundException.class)
+    public void testNotPhoneNumberFoundException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new NotPhoneNumberFoundExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = UnknownErrorException.class)
+    public void testUnknownErrorException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new UnknownErrorExceptionSender());
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        cmProxy.send(smsMessage);
+    }
+
+    @Test(expected = UnroutableMessageException.class)
+    public void testUnroutableMessageException() throws Exception {
+
+        // Change sending strategy
+        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer().setSender(new UnroutableMessageExceptionSender());
 
         // Body
         final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));

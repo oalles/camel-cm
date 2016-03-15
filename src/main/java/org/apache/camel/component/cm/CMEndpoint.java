@@ -46,6 +46,8 @@ public class CMEndpoint extends DefaultEndpoint {
      */
     private CMConfiguration configuration;
 
+    private CMProducer producer;
+
     /**
      * Constructs a partially-initialized CMEndpoint instance. Useful when creating endpoints manually (e.g., as beans in Spring).
      */
@@ -85,7 +87,7 @@ public class CMEndpoint extends DefaultEndpoint {
 
         // CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
         // checked
-        final CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(getCMUrl(), config.getProductToken()));
+        producer = new CMProducer(this, new CMSenderOneMessageImpl(getCMUrl(), config.getProductToken()));
         return producer;
     }
 
@@ -130,5 +132,9 @@ public class CMEndpoint extends DefaultEndpoint {
     @Override
     public CMComponent getComponent() {
         return (CMComponent) super.getComponent();
+    }
+
+    public CMProducer getProducer() {
+        return producer;
     }
 }
