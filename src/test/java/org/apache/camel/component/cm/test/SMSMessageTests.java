@@ -78,6 +78,15 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
+    public void testNullPhoneNumber() throws Exception {
+
+        final SMSMessage m = new SMSMessage("Hello world!", null);
+
+        final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
+        Assert.isTrue(1 == constraintViolations.size());
+    }
+
+    @Test
     public void testDynamicFromFieldMaxLength() throws Exception {
 
         String dynamicFrom = "messagelengthgreaterthan12";
@@ -126,13 +135,13 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testE164NullNumberIsValid() throws Exception {
+    public void testE164NullNumberIsInValid() throws Exception {
 
         final String phoneNumber = null;
         final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
-        Assert.isTrue(0 == constraintViolations.size());
+        Assert.isTrue(1 == constraintViolations.size());
     }
 
     @Test

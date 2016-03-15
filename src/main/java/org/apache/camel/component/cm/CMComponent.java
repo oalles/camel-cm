@@ -17,6 +17,7 @@
 package org.apache.camel.component.cm;
 
 import java.util.Map;
+import java.util.Set;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -64,17 +65,20 @@ public class CMComponent extends UriEndpointComponent {
             throw t;
         }
 
-        LOG.debug("Creating endpoint uri=[{}], path=[{}], parameters=[{}]", new Object[] {URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters});
+        LOG.debug("Creating endpoint uri=[{}], path=[{}], parameters=[{}]", new Object[] { URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
 
         // Set configuration based on uri parameters
         final CMConfiguration config = new CMConfiguration();
         setProperties(config, parameters);
 
         // Validate configuration
-        for (final ConstraintViolation<CMConfiguration> cv : validator.validate(config)) {
-            final String msg = String.format("Invalid value for %s: %s", cv.getPropertyPath().toString(), cv.getMessage());
-            LOG.error(msg);
-            throw new InvalidUriEndpointException(msg);
+        final Set<ConstraintViolation<CMConfiguration>> constraintViolations = validator.validate(config);
+        if (constraintViolations.size() > 0) {
+            final StringBuffer msg = new StringBuffer();
+            for (final ConstraintViolation<CMConfiguration> cv : constraintViolations) {
+                msg.append(String.format("- Invalid value for %s: %s", cv.getPropertyPath().toString(), cv.getMessage()));
+            }
+            throw new InvalidUriEndpointException(msg.toString());
         }
 
         // Component is an Endpoint factory. So far, just one Endpoint type.

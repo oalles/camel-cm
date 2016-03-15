@@ -20,21 +20,4 @@ public class NoMessageException extends CMResponseException {
 
     public NoMessageException() {
     }
-
-    public NoMessageException(final String message) {
-        super(message);
-    }
-
-    public NoMessageException(final Throwable cause) {
-        super(cause);
-    }
-
-    public NoMessageException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoMessageException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

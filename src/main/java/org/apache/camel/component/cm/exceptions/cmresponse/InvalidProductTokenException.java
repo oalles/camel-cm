@@ -18,27 +18,9 @@ package org.apache.camel.component.cm.exceptions.cmresponse;
 
 /**
  * Invalid or missing
- *
  */
 public class InvalidProductTokenException extends CMResponseException {
 
     public InvalidProductTokenException() {
-    }
-
-    public InvalidProductTokenException(final String message) {
-        super(message);
-    }
-
-    public InvalidProductTokenException(final Throwable cause) {
-        super(cause);
-    }
-
-    public InvalidProductTokenException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidProductTokenException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

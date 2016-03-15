@@ -20,21 +20,4 @@ public class UnroutableMessageException extends CMResponseException {
 
     public UnroutableMessageException() {
     }
-
-    public UnroutableMessageException(final String message) {
-        super(message);
-    }
-
-    public UnroutableMessageException(final Throwable cause) {
-        super(cause);
-    }
-
-    public UnroutableMessageException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public UnroutableMessageException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

@@ -17,29 +17,10 @@
 package org.apache.camel.component.cm.exceptions.cmresponse;
 
 /**
- * An unexpected error occurred. Check the provided values. Contact CM for
- * support.
- *
+ * An unexpected error occurred. Check the provided values. Contact CM for support.
  */
 public class UnknownErrorException extends CMResponseException {
 
     public UnknownErrorException() {
-    }
-
-    public UnknownErrorException(final String message) {
-        super(message);
-    }
-
-    public UnknownErrorException(final Throwable cause) {
-        super(cause);
-    }
-
-    public UnknownErrorException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public UnknownErrorException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
     }
 }

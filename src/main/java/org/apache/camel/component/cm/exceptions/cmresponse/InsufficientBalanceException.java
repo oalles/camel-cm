@@ -18,28 +18,9 @@ package org.apache.camel.component.cm.exceptions.cmresponse;
 
 /**
  * You are out of trial messages. Order new messages via your dashboard.
- *
  */
 public class InsufficientBalanceException extends CMResponseException {
 
     public InsufficientBalanceException() {
     }
-
-    public InsufficientBalanceException(final String message) {
-        super(message);
-    }
-
-    public InsufficientBalanceException(final Throwable cause) {
-        super(cause);
-    }
-
-    public InsufficientBalanceException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public InsufficientBalanceException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
 }

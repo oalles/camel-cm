@@ -22,17 +22,15 @@ import javax.validation.constraints.Size;
 import org.apache.camel.component.cm.validation.constraints.E164;
 
 /**
- * Inmutable.
- *
- * The message instance provided by the client.
+ * Inmutable. The message instance provided by the client.
  */
 public class SMSMessage {
 
     /**
-     * Required MSISDN. E164 value starting with +. (so, don't need to set the
-     * country in parameter if my phone number begins with "+".)
+     * Required MSISDN. E164 value starting with +. (so, don't need to set the country in parameter if my phone number begins with "+".)
      */
     @E164
+    @NotNull
     private final String phoneNumber;
 
     /**
@@ -45,8 +43,7 @@ public class SMSMessage {
     private final String dynamicFrom;
 
     /**
-     * Restrictions: 1 - 32 alphanumeric characters and reference will not work
-     * for demo accounts.
+     * Restrictions: 1 - 32 alphanumeric characters and reference will not work for demo accounts.
      */
     @Size(min = 1, max = 32)
     private final String idAsString;
@@ -55,8 +52,7 @@ public class SMSMessage {
         this(null, message, phoneNumber, null);
     }
 
-    public SMSMessage(final String idAsString, final String message, final String phoneNumber,
-            final String dynamicFrom) {
+    public SMSMessage(final String idAsString, final String message, final String phoneNumber, final String dynamicFrom) {
         this.idAsString = idAsString;
         this.message = message;
         this.phoneNumber = phoneNumber;

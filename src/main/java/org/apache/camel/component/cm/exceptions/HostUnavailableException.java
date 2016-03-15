@@ -16,24 +16,24 @@
  */
 package org.apache.camel.component.cm.exceptions;
 
-public class ProviderHostUnavailableException extends RuntimeException {
+public class HostUnavailableException extends MessagingException {
 
-    public ProviderHostUnavailableException() {
+    public HostUnavailableException() {
     }
 
-    public ProviderHostUnavailableException(final String message) {
+    public HostUnavailableException(final String message) {
         super(message);
     }
 
-    public ProviderHostUnavailableException(final Throwable cause) {
+    public HostUnavailableException(final Throwable cause) {
         super(cause);
     }
 
-    public ProviderHostUnavailableException(final String message, final Throwable cause) {
+    public HostUnavailableException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ProviderHostUnavailableException(final String message, final Throwable cause,
+    public HostUnavailableException(final String message, final Throwable cause,
             final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }

@@ -18,9 +18,8 @@ package org.apache.camel.component.cm.exceptions;
 
 /**
  * Invalid Resource URL - CM Hosts
- *
  */
-public class InvalidURLException extends CMValidationException {
+public class InvalidURLException extends InvalidUriEndpointException {
 
     public InvalidURLException() {
     }
@@ -28,18 +27,4 @@ public class InvalidURLException extends CMValidationException {
     public InvalidURLException(final String message) {
         super(message);
     }
-
-    public InvalidURLException(final Throwable cause) {
-        super(cause);
-    }
-
-    public InvalidURLException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidURLException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
 }

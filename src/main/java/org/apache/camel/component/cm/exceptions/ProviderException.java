@@ -16,7 +16,9 @@
  */
 package org.apache.camel.component.cm.exceptions;
 
-public class ProviderException extends CMDirectException {
+import org.apache.camel.component.cm.exceptions.cmresponse.CMResponseException;
+
+public class ProviderException extends CMResponseException {
 
     public ProviderException() {
     }
@@ -33,8 +35,7 @@ public class ProviderException extends CMDirectException {
         super(message, cause);
     }
 
-    public ProviderException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
+    public ProviderException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

@@ -20,21 +20,4 @@ public class InvalidMSISDNException extends CMResponseException {
 
     public InvalidMSISDNException() {
     }
-
-    public InvalidMSISDNException(final String message) {
-        super(message);
-    }
-
-    public InvalidMSISDNException(final Throwable cause) {
-        super(cause);
-    }
-
-    public InvalidMSISDNException(final String message, final Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidMSISDNException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
 }

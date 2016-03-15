@@ -37,8 +37,6 @@ public class CMEndpoint extends DefaultEndpoint {
 
     private static final Logger LOG = LoggerFactory.getLogger(CMEndpoint.class);
 
-    // TODO: SYNC request to CM host. See ResponseProcessor.
-
     @UriPath
     @Metadata(description = "SMS Provider HOST with scheme", required = "true")
     private String host;
@@ -49,27 +47,21 @@ public class CMEndpoint extends DefaultEndpoint {
     private CMConfiguration configuration;
 
     /**
-     * Constructs a partially-initialized CMEndpoint instance. Useful when
-     * creating endpoints manually (e.g., as beans in Spring).
+     * Constructs a partially-initialized CMEndpoint instance. Useful when creating endpoints manually (e.g., as beans in Spring).
      */
     // We are just going to allow fully initialized endpoint instances
     // public CMEndpoint() {
     // }
 
     /**
-     * Constructs a fully-initialized CMEndpoint instance. This is the preferred
-     * method of constructing an object from Java code (as opposed to Spring
-     * beans, etc.).
+     * Constructs a fully-initialized CMEndpoint instance. This is the preferred method of constructing an object from Java code (as opposed to Spring beans, etc.).
      *
-     * @param endpointUri
-     *            the full URI used to create this endpoint
-     * @param component
-     *            the component that created this endpoint
+     * @param endpointUri the full URI used to create this endpoint
+     * @param component the component that created this endpoint
      */
     public CMEndpoint(final String uri, final CMComponent component) {
         super(uri, component);
 
-        // SYNC Request + CMResponse Processing.
         setExchangePattern(ExchangePattern.InOut);
         LOG.info("+ CM - Endpoint created.");
     }
@@ -88,16 +80,14 @@ public class CMEndpoint extends DefaultEndpoint {
 
         // CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
         // checked
-        final CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(
-                getCMUrl(), config.getProductToken()));
+        final CMProducer producer = new CMProducer(this, new CMSenderOneMessageImpl(getCMUrl(), config.getProductToken()));
         return producer;
     }
 
     @Override
     public Consumer createConsumer(final Processor processor) throws Exception {
 
-        throw new RuntimeCamelException(
-                "So far, cannot consume from CM Endpoint: " + getEndpointUri());
+        throw new RuntimeCamelException("So far, cannot consume from CM Endpoint: " + getEndpointUri());
     }
 
     public CMConfiguration getConfiguration() {

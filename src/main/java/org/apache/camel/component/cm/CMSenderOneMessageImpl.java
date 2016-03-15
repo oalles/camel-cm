@@ -87,7 +87,7 @@ public class CMSenderOneMessageImpl implements CMSender {
             doHttpPost(url, xml);
         } catch (final RuntimeException e) {
             LOG.error("Failed to send SMS: {}", cmMessage, e);
-            throw new MessagingException(e);
+            throw e; // XMLConstrucion o
         }
     }
 

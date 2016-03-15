@@ -16,14 +16,9 @@
  */
 package org.apache.camel.component.cm.exceptions.cmresponse;
 
-import org.apache.camel.component.cm.exceptions.CMDirectException;
+import org.apache.camel.component.cm.exceptions.MessagingException;
 
-/**
- * Excepciones en la respuestas que nos ofrece CMDirect
- *
- *
- */
-public class CMResponseException extends CMDirectException {
+public class CMResponseException extends MessagingException {
 
     public CMResponseException() {
     }
@@ -40,8 +35,7 @@ public class CMResponseException extends CMDirectException {
         super(message, cause);
     }
 
-    public CMResponseException(final String message, final Throwable cause,
-            final boolean enableSuppression, final boolean writableStackTrace) {
+    public CMResponseException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }

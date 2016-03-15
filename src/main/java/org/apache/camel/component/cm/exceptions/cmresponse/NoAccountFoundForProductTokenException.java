@@ -20,31 +20,9 @@ package org.apache.camel.component.cm.exceptions.cmresponse;
  * No account found for the provided product token.
  *
  * @author Omar
- *
  */
-public class NoAccountFoundForProductTokenException
-        extends CMResponseException {
+public class NoAccountFoundForProductTokenException extends CMResponseException {
 
     public NoAccountFoundForProductTokenException() {
     }
-
-    public NoAccountFoundForProductTokenException(final String message) {
-        super(message);
-    }
-
-    public NoAccountFoundForProductTokenException(final Throwable cause) {
-        super(cause);
-    }
-
-    public NoAccountFoundForProductTokenException(final String message,
-            final Throwable cause) {
-        super(message, cause);
-    }
-
-    public NoAccountFoundForProductTokenException(final String message,
-            final Throwable cause, final boolean enableSuppression,
-            final boolean writableStackTrace) {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
 }
