@@ -83,7 +83,7 @@ public class CMSenderOneMessageImpl implements CMSender {
             // 1.Construct XML. Throws XMLConstructionException
             final String xml = createXml(cmMessage);
 
-            // 2. Try to send to SMS Provider ...Throws ProviderException
+            // 2. Try to send to CM SMS Provider ...Throws CMResponse
             doHttpPost(url, xml);
         } catch (final RuntimeException e) {
             LOG.error("Failed to send SMS: {}", cmMessage, e);
@@ -254,6 +254,12 @@ public class CMSenderOneMessageImpl implements CMSender {
             LOG.debug("Result of the request processing: Successfully submited");
         } catch (final IOException io) {
             throw new ProviderException(io);
+        } catch (Throwable t) {
+            if (!(t instanceof MessagingException)) {
+                // Chain it
+                t = new MessagingException(t);
+            }
+            throw (MessagingException) t;
         }
     }
 }

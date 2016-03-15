@@ -90,7 +90,7 @@ public class CMProducer extends DefaultProducer {
             setUnicodeAndMultipart(cmMessage);
 
             // 2. Send a validated sms message to CM endpoints
-            // throws XMLConstructionException, ProviderException, CMResponseException
+            // throws MessagingException for abnormal situations.
             sender.send(cmMessage);
 
             log.info("The request was accepted");
