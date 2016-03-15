@@ -21,11 +21,13 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.component.cm.client.SMSMessage;
+import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.InvalidURLException;
-import org.apache.camel.component.cm.exceptions.cmresponse.CMResponseException;
+import org.apache.camel.component.cm.exceptions.cmresponse.NoAccountFoundForProductTokenException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringDelegatingTestContextLoader;
 import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,20 +64,32 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     @Before
     public void beforeTest() throws Exception {
         mock.reset();
+
+        camelContext.startRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
     }
 
-    // @After
-    // public void afterTest() {
+    @After
+    public void afterTest() {
 
-    // Stop all routes
-    // for (Route route : camelContext.getRoutes()) {
-    // try {
-    // camelContext.stopRoute(route.getId());
-    // } catch (Exception e) {
-    // logger.error("Exception trying to stop de routes", e);
-    // }
-    // }
-    // }
+        try {
+            camelContext.stopRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
+        } catch (Exception e) {
+            logger.error("Exception trying to stop de routes", e);
+        }
+
+        // Stop all routes
+        // for (Route route : camelContext.getRoutes()) {
+        // try {
+        // camelContext.stopRoute(route.getId());
+        // } catch (Exception e) {
+        // logger.error("Exception trying to stop de routes", e);
+        // }
+        // }
+    }
+
+    /*
+     * 1. Invalid URI
+     */
 
     @Test(expected = InvalidURLException.class)
     public void testInvalidHostDuplicateScheme() throws Throwable {
@@ -99,20 +113,33 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         }
     }
 
+    /*
+     * 2. Invalid Payload
+     */
+
+    @Test(expected = InvalidPayloadException.class)
+    public void testNullPayload() throws Throwable {
+        cmProxy.send(null);
+    }
+
     // @DirtiesContext
-    @Test(expected = CMResponseException.class)
+    @Test(expected = NoAccountFoundForProductTokenException.class)
     public void testAsPartOfARoute() throws Exception {
-
-        mock.expectedMessageCount(1);
-
-        camelContext.startRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
 
         // Body
         final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
         cmProxy.send(smsMessage);
-
-        mock.assertIsSatisfied();
-
-        camelContext.stopRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
     }
+
+    // @Test(expected = RuntimeException.class)
+    // public void testSkel() throws Exception {
+
+    // mock.expectedMessageCount(1);
+    //
+    // // Body
+    // final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+    // cmProxy.send(smsMessage);
+    //
+    // mock.assertIsSatisfied();
+    // }
 }
