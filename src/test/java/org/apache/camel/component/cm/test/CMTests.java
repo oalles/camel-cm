@@ -19,7 +19,10 @@ package org.apache.camel.component.cm.test;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
+import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.component.cm.client.SMSMessage;
+import org.apache.camel.component.cm.exceptions.InvalidURLException;
+import org.apache.camel.component.cm.exceptions.cmresponse.CMResponseException;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.spring.CamelSpringDelegatingTestContextLoader;
 import org.apache.camel.test.spring.CamelSpringJUnit4ClassRunner;
@@ -34,7 +37,7 @@ import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 
 @RunWith(CamelSpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { TestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
+@ContextConfiguration(classes = { CamelTestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 // @DisableJmx(false)
 // @MockEndpoints
@@ -74,13 +77,35 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     // }
     // }
 
+    @Test(expected = InvalidURLException.class)
+    public void testInvalidHostDuplicateScheme() throws Throwable {
+        // cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true
+        try {
+            String schemedUri = "cm://https://demo.com";
+            camelContext.getEndpoint(schemedUri);
+        } catch (Throwable t) {
+            throw t.getCause();
+        }
+    }
+
+    @Test(expected = ResolveEndpointFailedException.class)
+    public void testInvalidUriEndpoint() throws Throwable {
+        // cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true
+        try {
+            String noHostUri = "cm://gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true";
+            camelContext.getEndpoint(noHostUri);
+        } catch (Throwable t) {
+            throw t;
+        }
+    }
+
     // @DirtiesContext
-    @Test
+    @Test(expected = CMResponseException.class)
     public void testAsPartOfARoute() throws Exception {
 
         mock.expectedMessageCount(1);
 
-        camelContext.startRoute(TestConfiguration.SIMPLE_ROUTE_ID);
+        camelContext.startRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
 
         // Body
         final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
@@ -88,6 +113,6 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 
         mock.assertIsSatisfied();
 
-        camelContext.stopRoute(TestConfiguration.SIMPLE_ROUTE_ID);
+        camelContext.stopRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
     }
 }

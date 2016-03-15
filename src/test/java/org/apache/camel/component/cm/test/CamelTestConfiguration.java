@@ -32,7 +32,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
  */
 @Configuration("cmConfig")
 @PropertySource("classpath:/cm-smsgw.properties")
-public class TestConfiguration extends SingleRouteCamelConfiguration {
+public class CamelTestConfiguration extends SingleRouteCamelConfiguration {
 
     public static final String SIMPLE_ROUTE_ID = "simple-route";
 
