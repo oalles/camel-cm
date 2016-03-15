@@ -43,9 +43,9 @@ public class CMComponent extends UriEndpointComponent {
     @BeanInject
     private Validator validator;
 
-    public CMComponent() {
-        super(CMEndpoint.class);
-    }
+    // public CMComponent() {
+    // super(CMEndpoint.class);
+    // }
 
     public CMComponent(final CamelContext context) {
         super(context, CMEndpoint.class);

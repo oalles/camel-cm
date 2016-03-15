@@ -274,6 +274,14 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         Assert.isTrue(endpoint.getHost().equals(applicationContext.getEnvironment().getRequiredProperty("cm.url")));
     }
 
+    @Test(expected = InvalidPayloadException.class)
+    public void testSendInvalidPayload() throws Exception {
+
+        // Body
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", null);
+        cmProxy.send(smsMessage);
+    }
+
     // @Test(expected = RuntimeException.class)
     // public void testSkel() throws Exception {
 
