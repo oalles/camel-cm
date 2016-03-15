@@ -40,7 +40,7 @@ public class E164Validator implements ConstraintValidator<E164, String> {
     public boolean isValid(final String value, final ConstraintValidatorContext context) {
 
         if (value == null) {
-            return true;
+            return false;
         }
         try {
 

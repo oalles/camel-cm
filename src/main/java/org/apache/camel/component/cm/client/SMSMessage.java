@@ -30,7 +30,6 @@ public class SMSMessage {
      * Required MSISDN. E164 value starting with +. (so, don't need to set the country in parameter if my phone number begins with "+".)
      */
     @E164
-    @NotNull
     private final String phoneNumber;
 
     /**
