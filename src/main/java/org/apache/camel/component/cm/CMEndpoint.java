@@ -76,7 +76,12 @@ public class CMEndpoint extends DefaultEndpoint {
         // This is the camel exchange processor. Allows to send messages to CM
         // API.
         // TODO: Should i provide a CMSender factory? Dynamically choose
-        // CMSenser implementation?
+        // CMSender implementation? Sending strategy?
+        // Consider:
+        // 1. single - Single Message strategy.
+        // 2. Multi - CM Api supports to 1000 messages per call.
+        // 3. sliding - sliding window? 1000 messages or time thresold?
+        // 4. mocked - in order to fake cm responses
 
         // CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
         // checked
