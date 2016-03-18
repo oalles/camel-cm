@@ -32,6 +32,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber.CountryCodeSource;
 
@@ -46,9 +47,12 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
     private Validator validator;
 
     private final PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
+    private String validNumber;
 
     @Before
     public void beforeTest() throws Exception {
+
+        validNumber = pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164);
     }
 
     // @After
@@ -70,8 +74,7 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
     @Test
     public void testNullMessageField() throws Exception {
 
-        final String phoneNumber = "+34600000000";
-        final SMSMessage m = new SMSMessage(null, phoneNumber);
+        final SMSMessage m = new SMSMessage(null, validNumber);
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
         Assert.isTrue(1 == constraintViolations.size());
@@ -91,8 +94,7 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
 
         String dynamicFrom = "messagelengthgreaterthan12";
 
-        final String phoneNumber = "+34600000000";
-        final SMSMessage m = new SMSMessage("idAsString", "Hello World", phoneNumber, dynamicFrom);
+        final SMSMessage m = new SMSMessage("idAsString", "Hello World", validNumber, dynamicFrom);
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
         Assert.isTrue(1 == constraintViolations.size());
@@ -103,8 +105,7 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
 
         String zeroLengthDynamicFrom = "";
 
-        final String phoneNumber = "+34600000000";
-        final SMSMessage m = new SMSMessage("idAsString", "Hello World", phoneNumber, zeroLengthDynamicFrom);
+        final SMSMessage m = new SMSMessage("idAsString", "Hello World", validNumber, zeroLengthDynamicFrom);
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
         Assert.isTrue(1 == constraintViolations.size());
@@ -115,8 +116,7 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
 
         String idAsString = "thisistheidastringlengthgreaterthan32";
 
-        final String phoneNumber = "+34600000000";
-        final SMSMessage m = new SMSMessage(idAsString, "Hello World", phoneNumber, "MySelf");
+        final SMSMessage m = new SMSMessage(idAsString, "Hello World", validNumber, "MySelf");
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
         Assert.isTrue(1 == constraintViolations.size());
@@ -127,8 +127,7 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
 
         String zeroLengthIdAsString = "";
 
-        final String phoneNumber = "+34600000000";
-        final SMSMessage m = new SMSMessage(zeroLengthIdAsString, "Hello World", phoneNumber, "MySelf");
+        final SMSMessage m = new SMSMessage(zeroLengthIdAsString, "Hello World", validNumber, "MySelf");
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
         Assert.isTrue(1 == constraintViolations.size());
@@ -147,8 +146,7 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
     @Test
     public void testE164IsValid() throws Exception {
 
-        final String phoneNumber = "+34600000000";
-        final SMSMessage m = new SMSMessage("Hello world!", phoneNumber);
+        final SMSMessage m = new SMSMessage("Hello world!", validNumber);
 
         final Set<ConstraintViolation<SMSMessage>> constraintViolations = validator.validate(m);
         Assert.isTrue(0 == constraintViolations.size());

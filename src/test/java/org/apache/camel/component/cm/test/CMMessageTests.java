@@ -26,6 +26,9 @@ import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = { ValidatorConfiguration.class })
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -33,8 +36,12 @@ import org.springframework.util.Assert;
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CMMessageTests extends AbstractJUnit4SpringContextTests {
 
+    private final PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
+    private String validNumber;
+
     @Before
     public void beforeTest() throws Exception {
+        validNumber = pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164);
     }
 
     // @After
@@ -54,9 +61,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 1);
@@ -72,9 +77,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 1);
@@ -91,9 +94,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 2);
@@ -108,9 +109,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 2);
@@ -125,9 +124,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 2);
@@ -142,9 +139,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 3);
@@ -159,9 +154,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 8);
@@ -176,9 +169,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append("a");
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 8);
@@ -201,9 +192,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 1);
@@ -221,9 +210,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 1);
@@ -242,9 +229,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 2);
@@ -261,9 +246,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 2);
@@ -280,9 +263,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 2);
@@ -299,9 +280,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 3);
@@ -318,9 +297,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 8);
@@ -337,9 +314,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
             message.append(ch);
         }
 
-        String phoneNumber = "+34600000000";
-
-        final CMMessage cmMessage = new CMMessage(phoneNumber, message.toString());
+        final CMMessage cmMessage = new CMMessage(validNumber, message.toString());
         cmMessage.setUnicodeAndMultipart(CMConstants.DEFAULT_MULTIPARTS);
 
         Assert.isTrue(cmMessage.getMultiparts() == 8);

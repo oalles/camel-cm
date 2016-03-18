@@ -75,6 +75,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     private CamelContext camelContext;
 
     private final PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
+    private String validNumber;
 
     @Produce(uri = "direct:sms")
     private CMProxy cmProxy;
@@ -88,6 +89,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     public void beforeTest() throws Exception {
         mock.reset();
         camelContext.startRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
+        validNumber = pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164);
     }
 
     @After
@@ -175,7 +177,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     public void testAsPartOfARoute() throws Exception {
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -187,7 +189,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new NoAccountFoundForProductTokenExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -203,7 +205,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new CMResponseExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -215,7 +217,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new InsufficientBalanceExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -227,7 +229,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new InvalidMSISDNExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -239,7 +241,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new InvalidProductTokenExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -251,7 +253,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new NoMessageExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -263,7 +265,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new NotPhoneNumberFoundExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -275,7 +277,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new UnknownErrorExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -287,7 +289,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new UnroutableMessageExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
         cmProxy.send(smsMessage);
     }
 
@@ -321,7 +323,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     // mock.expectedMessageCount(1);
     //
     // // Body
-    // final SMSMessage smsMessage = new SMSMessage("Hello CM", pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164));
+    // final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
     // cmProxy.send(smsMessage);
     //
     // mock.assertIsSatisfied();
