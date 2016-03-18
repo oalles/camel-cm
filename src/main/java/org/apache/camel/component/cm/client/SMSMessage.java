@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 import org.apache.camel.component.cm.validation.constraints.E164;
 
 /**
- * Inmutable. The message instance provided by the client.
+ * Immutable. The message instance provided by the client.
  */
 public class SMSMessage {
 
@@ -73,4 +73,10 @@ public class SMSMessage {
     public String getDynamicFrom() {
         return dynamicFrom;
     }
+
+    @Override
+    public String toString() {
+        return "SMSMessage [phoneNumber=" + phoneNumber + ", message=" + message + ", dynamicFrom=" + dynamicFrom + ", idAsString=" + idAsString + "]";
+    }
+
 }

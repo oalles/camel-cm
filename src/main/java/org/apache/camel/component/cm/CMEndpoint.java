@@ -63,9 +63,8 @@ public class CMEndpoint extends DefaultEndpoint {
      */
     public CMEndpoint(final String uri, final CMComponent component) {
         super(uri, component);
-
         setExchangePattern(ExchangePattern.InOut);
-        LOG.info("+ CM - Endpoint created.");
+        LOG.info("CM Endpoint created - (IN/OUT)");
     }
 
     /**
@@ -87,7 +86,9 @@ public class CMEndpoint extends DefaultEndpoint {
 
         // CMConstants.DEFAULT_SCHEME + host is a valid URL. It was previously
         // checked
+        LOG.debug("Creating CM Producer");
         producer = new CMProducer(this, new CMSenderOneMessageImpl(getCMUrl(), config.getProductToken()));
+        LOG.debug("CM Producer: OK!");
         return producer;
     }
 

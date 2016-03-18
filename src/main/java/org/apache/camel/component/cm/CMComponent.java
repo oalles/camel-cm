@@ -57,6 +57,8 @@ public class CMComponent extends UriEndpointComponent {
     @Override
     protected Endpoint createEndpoint(final String uri, final String remaining, final Map<String, Object> parameters) throws Exception {
 
+        LOG.info("Creating CM Endpoint ... ");
+
         final String url = CMConstants.DEFAULT_SCHEME + remaining;
         if (!UrlValidator.getInstance().isValid(url)) {
             final String errorMessage = String.format("HOST provided: %s seem to be invalid. Remember SCHEME has to be excluded.", url);
@@ -65,25 +67,29 @@ public class CMComponent extends UriEndpointComponent {
             throw t;
         }
 
-        LOG.debug("Creating endpoint uri=[{}], path=[{}], parameters=[{}]", new Object[] { URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
+        LOG.info("Uri=[{}], path=[{}], parameters=[{}]", new Object[] { URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
 
         // Set configuration based on uri parameters
         final CMConfiguration config = new CMConfiguration();
         setProperties(config, parameters);
 
         // Validate configuration
+        LOG.info("Validating uri based configuration");
         final Set<ConstraintViolation<CMConfiguration>> constraintViolations = validator.validate(config);
         if (constraintViolations.size() > 0) {
             final StringBuffer msg = new StringBuffer();
             for (final ConstraintViolation<CMConfiguration> cv : constraintViolations) {
                 msg.append(String.format("- Invalid value for %s: %s", cv.getPropertyPath().toString(), cv.getMessage()));
             }
+            LOG.error(msg.toString());
             throw new InvalidUriEndpointException(msg.toString());
         }
+        LOG.info("CMConfiguration - OK!");
 
         // Component is an Endpoint factory. So far, just one Endpoint type.
         // Endpoint construction and configuration.
 
+        LOG.info("Creating CMEndpoint");
         final CMEndpoint endpoint = new CMEndpoint(uri, this);
         endpoint.setConfiguration(config);
         endpoint.setHost(remaining);

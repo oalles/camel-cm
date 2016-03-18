@@ -28,11 +28,15 @@ import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.impl.DefaultProducer;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * is the exchange processor. Sends a validated sms message to CM Endpoints.
  */
 public class CMProducer extends DefaultProducer {
+
+    private static final Logger LOG = LoggerFactory.getLogger(CMProducer.class);
 
     private Validator validator;
 
@@ -55,9 +59,6 @@ public class CMProducer extends DefaultProducer {
 
         try {
 
-            // TODO: 1 CMMessage to 1000CMMessages ? Will depend on CMSender
-            // implementation? Can i choose CMSender impl via factory?
-
             // Immutable message receive from clients.
             final SMSMessage smsMessage = exchange.getIn().getBody(SMSMessage.class);
             if (smsMessage == null) {
@@ -65,6 +66,7 @@ public class CMProducer extends DefaultProducer {
             }
 
             // Validates Payload - SMSMessage
+            LOG.trace("Validating SMSMessage instance provided: {}", smsMessage.toString());
             final Set<ConstraintViolation<SMSMessage>> constraintViolations = getValidator().validate(smsMessage);
             if (constraintViolations.size() > 0) {
                 final StringBuffer msg = new StringBuffer();
@@ -73,14 +75,18 @@ public class CMProducer extends DefaultProducer {
                 }
                 throw new InvalidPayloadException(msg.toString());
             }
+            LOG.trace("SMSMessage instance is valid: {}", smsMessage.toString());
 
             // We have a valid (immutable) SMSMessage instance, lets extend to CMMessage
             // This is the instance we will use to build the XML document to be
             // sent to CM SMS GW.
             final CMMessage cmMessage = new CMMessage(smsMessage.getPhoneNumber(), smsMessage.getMessage());
+            LOG.debug("CMMessage instance build from valid SMSMessage instance");
 
             if (smsMessage.getDynamicFrom() == null || smsMessage.getDynamicFrom().isEmpty()) {
-                cmMessage.setDynamicSender(getConfiguration().getDefaultFrom());
+                String df = getConfiguration().getDefaultFrom();
+                cmMessage.setDynamicSender(df);
+                LOG.debug("Dynamic sender is set to default dynamic sender: {}", df);
             }
 
             // Remember, this can be null.
@@ -93,7 +99,7 @@ public class CMProducer extends DefaultProducer {
             // throws MessagingException for abnormal situations.
             sender.send(cmMessage);
 
-            log.info("The request was accepted");
+            log.debug("Request accepted by CM Host: {}", cmMessage.toString());
         } catch (final NullPointerException e) {
             // Body hast to be an instance of SMSMessage
             final String m = "Check in message body - Has to be an instance of SMSMessage";
@@ -121,6 +127,7 @@ public class CMProducer extends DefaultProducer {
                 HttpClientBuilder.create().build().execute(new HttpHead(getEndpoint().getCMUrl()));
                 log.info("Connection to {}: OK", getEndpoint().getCMUrl());
             } catch (final Exception e) {
+                log.info("Connection to {}: NOT AVAILABLE", getEndpoint().getCMUrl());
                 throw new HostUnavailableException(e);
             }
         }

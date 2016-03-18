@@ -133,4 +133,16 @@ public class CMMessage {
     public int getMultiparts() {
         return multipart;
     }
+
+    @Override
+    public String toString() {
+
+        StringBuffer sb = new StringBuffer("CMMessage [phoneNumber=" + phoneNumber + ", message=" + message + " dynamicSender=" + dynamicSender + ", unicode=" + unicode + ", multipart=" + multipart
+                                           + "]");
+        if (idAsString != null && !idAsString.isEmpty()) {
+            sb.append(", idAsString=" + idAsString);
+        }
+        return sb.toString();
+    }
+
 }

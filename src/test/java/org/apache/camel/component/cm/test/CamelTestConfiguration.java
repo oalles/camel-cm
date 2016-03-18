@@ -46,7 +46,7 @@ public class CamelTestConfiguration extends SingleRouteCamelConfiguration {
 
                 Assert.hasLength(uri);
 
-                log.info("CM URI: {}", uri);
+                log.info("\nCM Component is an URI based component\nCM URI: {}", uri);
 
                 // Route definition
                 from("direct:sms").to(uri).to("mock:test").routeId(SIMPLE_ROUTE_ID).autoStartup(true);
