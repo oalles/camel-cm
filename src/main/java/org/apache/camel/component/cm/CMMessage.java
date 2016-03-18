@@ -114,7 +114,7 @@ public class CMMessage {
             if (msg.length() > CMConstants.MAX_UNICODE_MESSAGE_LENGTH) {
 
                 // Multiparts. 67 caracteres max per part
-                int parts = msg.length() / CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART + 1;
+                int parts = msg.length() / CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
                 if (msg.length() % CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART != 0) {
                     parts++;
                 }
