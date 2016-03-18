@@ -16,6 +16,9 @@
  */
 package org.apache.camel.component.cm.test;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
@@ -73,6 +76,8 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private CamelContext camelContext;
+
+    private SecureRandom random = new SecureRandom();
 
     private final PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
     private String validNumber;
@@ -177,7 +182,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     public void testAsPartOfARoute() throws Exception {
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -189,7 +194,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new NoAccountFoundForProductTokenExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -205,7 +210,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new CMResponseExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -217,7 +222,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new InsufficientBalanceExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -229,7 +234,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new InvalidMSISDNExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -241,7 +246,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new InvalidProductTokenExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -253,7 +258,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new NoMessageExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -265,7 +270,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new NotPhoneNumberFoundExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -277,7 +282,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new UnknownErrorExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -289,7 +294,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         endpoint.getProducer().setSender(new UnroutableMessageExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", validNumber);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -313,9 +318,13 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     public void testSendInvalidPayload() throws Exception {
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage("Hello CM", null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), null, null);
         cmProxy.send(smsMessage);
     }
+
+    /*
+     * CMMessages
+     */
 
     // @Test(expected = RuntimeException.class)
     // public void testSkel() throws Exception {
@@ -328,4 +337,30 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     //
     // mock.assertIsSatisfied();
     // }
+
+    private String generateUnicodeMessage() {
+        String ch = "\uF400";
+        return generateRandomLengthMessageByChar(ch);
+    }
+
+    private String generateGSM0338Message() {
+        String ch = "a";
+        return generateRandomLengthMessageByChar(ch);
+    }
+
+    private String generateRandomLengthMessageByChar(String ch) {
+        // random Length
+        int msgLength = (int) (Math.random() * 2000);
+        StringBuffer message = new StringBuffer();
+        for (int index = 0; (index < msgLength); index++) {
+            message.append(ch);
+        }
+        return message.toString();
+    }
+
+    //
+    private String generateIdAsString() {
+        return new BigInteger(130, random).toString(32);
+    }
+
 }
