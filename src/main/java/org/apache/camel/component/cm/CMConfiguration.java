@@ -31,8 +31,7 @@ import org.slf4j.LoggerFactory;
 @UriParams
 public class CMConfiguration {
 
-    private static final Logger LOG = LoggerFactory
-            .getLogger(CMConfiguration.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CMConfiguration.class);
 
     @UriParam
     @NotNull
@@ -47,10 +46,8 @@ public class CMConfiguration {
     private String defaultFrom;
 
     /**
-     * If it is a multipart message forces the max number. Message can be
-     * truncated. Technically the gateway will first check if a message is
-     * larger than 160 characters, if so, the message will be cut into multiple
-     * 153 characters parts limited by these parameters. <br>
+     * If it is a multipart message forces the max number. Message can be truncated. Technically the gateway will first check if a message is larger than 160 characters, if so, the message will be cut
+     * into multiple 153 characters parts limited by these parameters. <br>
      * {@link https://dashboard.onlinesmsgateway.com/docs#send-a-message-multipart}
      */
     @UriParam
@@ -65,8 +62,8 @@ public class CMConfiguration {
         return productToken;
     }
 
-    public void setProductToken(final String tokenAsString) {
-        productToken = UUID.fromString(tokenAsString);
+    public void setProductToken(String productTokenAsString) {
+        productToken = UUID.fromString(productTokenAsString);
     }
 
     public String getDefaultFrom() {
@@ -93,7 +90,7 @@ public class CMConfiguration {
         this.testConnectionOnStartup = testConnectionOnStartup;
     }
 
-    public void setProductToken(final UUID productToken) {
+    public void setProductTokenAsUUID(final UUID productToken) {
         this.productToken = productToken;
     }
 }

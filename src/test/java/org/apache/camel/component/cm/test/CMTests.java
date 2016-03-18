@@ -21,10 +21,13 @@ import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
 import org.apache.camel.ResolveEndpointFailedException;
 import org.apache.camel.RuntimeCamelException;
+import org.apache.camel.Service;
 import org.apache.camel.component.cm.CMEndpoint;
 import org.apache.camel.component.cm.client.SMSMessage;
+import org.apache.camel.component.cm.exceptions.HostUnavailableException;
 import org.apache.camel.component.cm.exceptions.InvalidPayloadException;
 import org.apache.camel.component.cm.exceptions.InvalidURLException;
+import org.apache.camel.component.cm.exceptions.InvalidUriEndpointException;
 import org.apache.camel.component.cm.exceptions.cmresponse.CMResponseException;
 import org.apache.camel.component.cm.exceptions.cmresponse.InsufficientBalanceException;
 import org.apache.camel.component.cm.exceptions.cmresponse.InvalidMSISDNException;
@@ -110,6 +113,36 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
      * 1. Invalid URI
      */
 
+    @Test(expected = InvalidUriEndpointException.class)
+    public void testNotRequiredProductToken() throws Throwable {
+        try {
+            String schemedUri = "cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&testConnectionOnStartup=true";
+            camelContext.getEndpoint(schemedUri).start();
+        } catch (Throwable t) {
+            throw t.getCause();
+        }
+
+    }
+
+    @Test(expected = InvalidUriEndpointException.class)
+    public void testNotRequiredDefaultFrom() throws Throwable {
+        try {
+            String schemedUri = "cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&testConnectionOnStartup=true";
+            camelContext.getEndpoint(schemedUri).start();
+        } catch (Throwable t) {
+            throw t.getCause();
+        }
+
+    }
+
+    @Test(expected = HostUnavailableException.class)
+    public void testHostUnavailableException() throws Throwable {
+        // cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true
+        String schemedUri = "cm://dummy.sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true";
+        Service service = camelContext.getEndpoint(schemedUri).createProducer();
+        service.start();
+    }
+
     @Test(expected = InvalidURLException.class)
     public void testInvalidHostDuplicateScheme() throws Throwable {
         // cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true
@@ -124,12 +157,8 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
     @Test(expected = ResolveEndpointFailedException.class)
     public void testInvalidUriEndpoint() throws Throwable {
         // cm://sgw01.cm.nl/gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true
-        try {
-            String noHostUri = "cm://gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true";
-            camelContext.getEndpoint(noHostUri);
-        } catch (Throwable t) {
-            throw t;
-        }
+        String noHostUri = "cm://gateway.ashx?defaultFrom=MyBusiness&defaultMaxNumberOfParts=8&productToken=ea723fd7-da81-4826-89bc-fa7144e71c40&testConnectionOnStartup=true";
+        camelContext.getEndpoint(noHostUri);
     }
 
     /*

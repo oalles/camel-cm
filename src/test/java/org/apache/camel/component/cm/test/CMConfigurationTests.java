@@ -50,6 +50,37 @@ public class CMConfigurationTests extends AbstractJUnit4SpringContextTests {
     // public void afterTest() {
 
     @Test
+    public void testNullProductToken() throws Exception {
+
+        final CMConfiguration configuration = new CMConfiguration();
+
+        // length: 1-11
+        configuration.setDefaultFrom("DefaultFrom");
+        configuration.setProductTokenAsUUID(null);
+        configuration.setDefaultMaxNumberOfParts(8);
+        configuration.setTestConnectionOnStartup(false);
+
+        final Set<ConstraintViolation<CMConfiguration>> constraintViolations = validator.validate(configuration);
+        Assert.isTrue(1 == constraintViolations.size());
+    }
+
+    @Test
+    public void testNullDefaultFrom() throws Exception {
+
+        final CMConfiguration configuration = new CMConfiguration();
+
+        // length: 1-11
+        configuration.setDefaultFrom(null);
+
+        configuration.setProductTokenAsUUID(UUID.randomUUID());
+        configuration.setDefaultMaxNumberOfParts(8);
+        configuration.setTestConnectionOnStartup(false);
+
+        final Set<ConstraintViolation<CMConfiguration>> constraintViolations = validator.validate(configuration);
+        Assert.isTrue(1 == constraintViolations.size());
+    }
+
+    @Test
     public void testDefaultFromFieldMaxLength() throws Exception {
 
         final CMConfiguration configuration = new CMConfiguration();
@@ -57,7 +88,7 @@ public class CMConfigurationTests extends AbstractJUnit4SpringContextTests {
         // length: 1-11
         configuration.setDefaultFrom("123456789012");
 
-        configuration.setProductToken(UUID.randomUUID());
+        configuration.setProductTokenAsUUID(UUID.randomUUID());
         configuration.setDefaultMaxNumberOfParts(8);
         configuration.setTestConnectionOnStartup(false);
 
@@ -73,7 +104,7 @@ public class CMConfigurationTests extends AbstractJUnit4SpringContextTests {
         // length: 1-11
         configuration.setDefaultFrom("");
 
-        configuration.setProductToken(UUID.randomUUID());
+        configuration.setProductTokenAsUUID(UUID.randomUUID());
         configuration.setDefaultMaxNumberOfParts(8);
         configuration.setTestConnectionOnStartup(false);
 
@@ -86,7 +117,7 @@ public class CMConfigurationTests extends AbstractJUnit4SpringContextTests {
 
         final CMConfiguration configuration = new CMConfiguration();
 
-        configuration.setProductToken(UUID.randomUUID());
+        configuration.setProductTokenAsUUID(UUID.randomUUID());
         configuration.setDefaultFrom("DefaultFrom");
         configuration.setDefaultMaxNumberOfParts(9);
         configuration.setTestConnectionOnStartup(false);
@@ -100,7 +131,7 @@ public class CMConfigurationTests extends AbstractJUnit4SpringContextTests {
 
         final CMConfiguration configuration = new CMConfiguration();
 
-        configuration.setProductToken(UUID.randomUUID());
+        configuration.setProductTokenAsUUID(UUID.randomUUID());
         configuration.setDefaultFrom("DefaultFrom");
         configuration.setDefaultMaxNumberOfParts(0);
         configuration.setTestConnectionOnStartup(false);
