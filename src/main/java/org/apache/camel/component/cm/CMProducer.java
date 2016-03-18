@@ -87,7 +87,7 @@ public class CMProducer extends DefaultProducer {
             cmMessage.setIdAsString(smsMessage.getIdAsString());
 
             // Unicode and multipart
-            setUnicodeAndMultipart(cmMessage);
+            cmMessage.setUnicodeAndMultipart(getConfiguration().getDefaultMaxNumberOfParts());
 
             // 2. Send a validated sms message to CM endpoints
             // throws MessagingException for abnormal situations.
@@ -138,37 +138,6 @@ public class CMProducer extends DefaultProducer {
 
     public CMConfiguration getConfiguration() {
         return getEndpoint().getConfiguration();
-    }
-
-    private void setUnicodeAndMultipart(final CMMessage message) {
-
-        // Defaults to 8
-        final int defaultMaxNumberOfParts = getConfiguration().getDefaultMaxNumberOfParts();
-
-        // Set UNICODE and MULTIPART
-        final String msg = message.getMessage();
-        if (CMUtils.isGsm0338Encodeable(msg)) {
-
-            // Not Unicode is Multipart?
-            if (msg.length() > CMConstants.MAX_GSM_MESSAGE_LENGTH) {
-
-                // Multiparts. 153 caracteres max per part
-                final int parts = msg.length() % CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
-
-                message.setMultiparts((parts > defaultMaxNumberOfParts) ? defaultMaxNumberOfParts : parts);
-            } // Otherwise multipart = 1
-        } else {
-            // Unicode Message
-            message.setUnicode(true);
-
-            if (msg.length() > CMConstants.MAX_UNICODE_MESSAGE_LENGTH) {
-
-                // Multiparts. 67 caracteres max per part
-                final int parts = msg.length() % CMConstants.MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART;
-
-                message.setMultiparts((parts > defaultMaxNumberOfParts) ? defaultMaxNumberOfParts : parts);
-            } // Otherwise multipart = 1
-        }
     }
 
     public Validator getValidator() {

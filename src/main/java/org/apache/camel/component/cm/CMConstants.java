@@ -20,6 +20,8 @@ public interface CMConstants {
 
     String DEFAULT_SCHEME = "https://";
 
+    int DEFAULT_MULTIPARTS = 8;
+
     int MAX_UNICODE_MESSAGE_LENGTH = 70;
     int MAX_GSM_MESSAGE_LENGTH = 160;
     int MAX_UNICODE_MESSAGE_LENGTH_PER_PART_IF_MULTIPART = 67;

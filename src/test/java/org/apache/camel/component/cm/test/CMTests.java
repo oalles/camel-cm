@@ -191,6 +191,10 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         cmProxy.send(smsMessage);
     }
 
+    /*
+     * 3. CM Responses (Faking Exceptions)
+     */
+
     @Test(expected = CMResponseException.class)
     public void testCMResponseException() throws Exception {
 
