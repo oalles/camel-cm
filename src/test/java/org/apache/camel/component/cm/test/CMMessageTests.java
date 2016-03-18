@@ -52,7 +52,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
      */
 
     @Test
-    public void testGSM338AndLTMAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndLTMAXGSMMESSAGELENGTH() throws Exception {
 
         // 0338 and less than 160 char -> 1 part
 
@@ -69,11 +69,11 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndEQMAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndEQMAXGSMMESSAGELENGTH() throws Exception {
         // 0338 and length is exactly 160 -> 1 part
 
         StringBuffer message = new StringBuffer();
-        for (int index = 0; (index < CMConstants.MAX_GSM_MESSAGE_LENGTH); index++) {
+        for (int index = 0; index < CMConstants.MAX_GSM_MESSAGE_LENGTH; index++) {
             message.append("a");
         }
 
@@ -85,7 +85,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndGTMAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndGTMAXGSMMESSAGELENGTH() throws Exception {
 
         // 0338 and length is exactly 161 -> 2 part
 
@@ -102,7 +102,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndLT2MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndLT2MAXGSMMESSAGELENGTH() throws Exception {
 
         StringBuffer message = new StringBuffer();
         for (int index = 0; index < (2 * CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART - 1); index++) {
@@ -117,7 +117,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndEQ2MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndEQ2MAXGSMMESSAGELENGTH() throws Exception {
 
         StringBuffer message = new StringBuffer();
         for (int index = 0; index < (2 * CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART); index++) {
@@ -132,7 +132,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndGT2MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndGT2MAXGSMMESSAGELENGTH() throws Exception {
 
         StringBuffer message = new StringBuffer();
         for (int index = 0; index < (2 * CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART + 1); index++) {
@@ -147,7 +147,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndEQ8MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndEQ8MAXGSMMESSAGELENGTH() throws Exception {
 
         StringBuffer message = new StringBuffer();
         for (int index = 0; index < (8 * CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART); index++) {
@@ -162,7 +162,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testGSM338AndGT8MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testGSM338AndGT8MAXGSMMESSAGELENGTH() throws Exception {
 
         StringBuffer message = new StringBuffer();
         for (int index = 0; index < (8 * CMConstants.MAX_GSM_MESSAGE_LENGTH_PER_PART_IF_MULTIPART + 1); index++) {
@@ -181,7 +181,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
      */
 
     @Test
-    public void testUnicodeAndLTMAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndLTMAXGSMMESSAGELENGTH() throws Exception {
 
         String ch = "\uF400";
 
@@ -200,13 +200,13 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndEQMAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndEQMAXGSMMESSAGELENGTH() throws Exception {
         // 0338 and length is exactly 160 -> 1 part
 
         String ch = "\uF400";
 
         StringBuffer message = new StringBuffer();
-        for (int index = 0; (index < CMConstants.MAX_UNICODE_MESSAGE_LENGTH); index++) {
+        for (int index = 0; index < CMConstants.MAX_UNICODE_MESSAGE_LENGTH; index++) {
             message.append(ch);
         }
 
@@ -218,7 +218,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndGTMAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndGTMAXGSMMESSAGELENGTH() throws Exception {
 
         // 0338 and length is exactly 161 -> 2 part
 
@@ -237,7 +237,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndLT2MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndLT2MAXGSMMESSAGELENGTH() throws Exception {
 
         String ch = "\uF400";
 
@@ -254,7 +254,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndEQ2MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndEQ2MAXGSMMESSAGELENGTH() throws Exception {
 
         String ch = "\uF400";
 
@@ -271,7 +271,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndGT2MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndGT2MAXGSMMESSAGELENGTH() throws Exception {
 
         String ch = "\uF400";
 
@@ -288,7 +288,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndEQ8MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndEQ8MAXGSMMESSAGELENGTH() throws Exception {
 
         String ch = "\uF400";
 
@@ -305,7 +305,7 @@ public class CMMessageTests extends AbstractJUnit4SpringContextTests {
     }
 
     @Test
-    public void testUnicodeAndGT8MAX_GSM_MESSAGE_LENGTH() throws Exception {
+    public void testUnicodeAndGT8MAXGSMMESSAGELENGTH() throws Exception {
 
         String ch = "\uF400";
 

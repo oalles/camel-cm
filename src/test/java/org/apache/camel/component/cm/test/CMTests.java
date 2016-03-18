@@ -352,7 +352,7 @@ public class CMTests extends AbstractJUnit4SpringContextTests {
         // random Length
         int msgLength = (int) (Math.random() * 2000);
         StringBuffer message = new StringBuffer();
-        for (int index = 0; (index < msgLength); index++) {
+        for (int index = 0; index < msgLength; index++) {
             message.append(ch);
         }
         return message.toString();
