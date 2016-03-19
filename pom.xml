@@ -28,6 +28,7 @@
 		<httpclient>${httpclient4-version}</httpclient>
 		<jsoup-version>1.8.3</jsoup-version>
 		<libphonenumber-version>7.2.7</libphonenumber-version>
+		<commons-validator-version>1.4.0</commons-validator-version>
 	</properties>
 
 	<dependencies>
@@ -67,7 +68,7 @@
 		<dependency>
 			<groupId>commons-validator</groupId>
 			<artifactId>commons-validator</artifactId>
-			<version>1.4.0</version>
+			<version>${commons-validator-version}</version>
 		</dependency>
 
 		<!-- test dependencies -->
