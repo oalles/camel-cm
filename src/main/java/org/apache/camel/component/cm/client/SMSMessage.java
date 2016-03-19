@@ -17,6 +17,7 @@
 package org.apache.camel.component.cm.client;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import org.apache.camel.component.cm.validation.constraints.E164;
@@ -27,39 +28,62 @@ import org.apache.camel.component.cm.validation.constraints.E164;
 public class SMSMessage {
 
     /**
-     * Required MSISDN. E164 value starting with +. (so, don't need to set the country in parameter if my phone number begins with "+".)
+     * Required MSISDN. E164 value. The destination phone number. Format with a '+' and country code.
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/E.164">https://en.wikipedia.org/wiki/E.164</a>
      */
     @E164
     private final String phoneNumber;
 
     /**
-     * Required.
+     * This is the message to be sent. 2 options:
+     * <ul>
+     * <li>If the message is GSM 0038 encodeable the gateway will first check if a message is larger than 160 characters, if so, the message will be cut into multiple 153 characters parts limited by
+     * defaultMaxNumberOfParts set in the component uri.</li>
+     * <li>Otherwise, the gateway will check if a message is larger than 70 characters, if so, the message will be cut into multiple 67 characters parts to a maximum of defaultMaxNumberOfParts set in
+     * the component uri.</li>
+     * </ul>
+     *
+     * @see <a href="https://en.wikipedia.org/wiki/GSM_03.38">E.164</a>
      */
     @NotNull
     private final String message;
 
+    /**
+     * This is an optional dynamic sender name.
+     * <p>
+     * 1 - 11 alphanumeric characters and + char. Not Empty Strings. This field has a maximum length of 11 characters. If it is not set the defaultFrom required to configure the component will be set.
+     */
     @Size(min = 1, max = 11)
-    private final String dynamicFrom;
+    @Pattern(regexp = "^[A-Za-z0-9]+$")
+    private final String from;
 
     /**
-     * Restrictions: 1 - 32 alphanumeric characters and reference will not work for demo accounts.
+     * Unique identifier for a message.
+     * <p>
+     * 1 - 32 alphanumeric characters. Not Empty Strings. Will not work for demo accounts. This field corresponds to REFERENCE parameter in CM Api.
      */
     @Size(min = 1, max = 32)
-    private final String idAsString;
+    @Pattern(regexp = "^[A-Za-z0-9]+$")
+    private final String id;
 
     public SMSMessage(final String message, final String phoneNumber) {
         this(null, message, phoneNumber, null);
     }
 
-    public SMSMessage(final String idAsString, final String message, final String phoneNumber, final String dynamicFrom) {
-        this.idAsString = idAsString;
-        this.message = message;
-        this.phoneNumber = phoneNumber;
-        this.dynamicFrom = dynamicFrom;
+    public SMSMessage(String id, final String message, final String phoneNumber) {
+        this(id, message, phoneNumber, null);
     }
 
-    public String getIdAsString() {
-        return idAsString;
+    public SMSMessage(final String id, final String message, final String phoneNumber, final String from) {
+        this.id = id;
+        this.message = message;
+        this.phoneNumber = phoneNumber;
+        this.from = from;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getMessage() {
@@ -70,13 +94,13 @@ public class SMSMessage {
         return phoneNumber;
     }
 
-    public String getDynamicFrom() {
-        return dynamicFrom;
+    public String getFrom() {
+        return from;
     }
 
     @Override
     public String toString() {
-        return "SMSMessage [phoneNumber=" + phoneNumber + ", message=" + message + ", dynamicFrom=" + dynamicFrom + ", idAsString=" + idAsString + "]";
+        return "SMSMessage [phoneNumber=" + phoneNumber + ", message=" + message + ", dynamicFrom=" + from + ", idAsString=" + id + "]";
     }
 
 }

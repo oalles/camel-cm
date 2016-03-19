@@ -36,7 +36,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ValidatorConfiguration.class })
+@ContextConfiguration(classes = {ValidatorConfiguration.class })
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 // @DisableJmx(false)
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -66,8 +66,8 @@ public class SMSMessageTests extends AbstractJUnit4SpringContextTests {
         Assert.isNull(message.getPhoneNumber());
 
         message = new SMSMessage("idAsString", null, null, "MySelf");
-        Assert.isTrue(message.getIdAsString().equals("idAsString"));
-        Assert.isTrue(message.getDynamicFrom().equals("MySelf"));
+        Assert.isTrue(message.getId().equals("idAsString"));
+        Assert.isTrue(message.getFrom().equals("MySelf"));
     }
 
     @Test

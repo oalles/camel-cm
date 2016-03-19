@@ -95,8 +95,6 @@ public class CMSenderOneMessageImpl implements CMSender {
 
         try {
 
-            // TODO: Arguments Validated en este punto.
-
             final ByteArrayOutputStream xml = new ByteArrayOutputStream();
             final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             factory.setNamespaceAware(true);
@@ -125,7 +123,7 @@ public class CMSenderOneMessageImpl implements CMSender {
 
             // <FROM>VALUE</FROM>
             final Element fromElement = doc.createElement("FROM");
-            fromElement.appendChild(doc.createTextNode(message.getDynamicSender()));
+            fromElement.appendChild(doc.createTextNode(message.getSender()));
             msgElement.appendChild(fromElement);
 
             // <BODY>VALUE</BODY>

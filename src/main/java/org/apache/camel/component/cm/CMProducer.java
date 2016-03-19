@@ -83,14 +83,14 @@ public class CMProducer extends DefaultProducer {
             final CMMessage cmMessage = new CMMessage(smsMessage.getPhoneNumber(), smsMessage.getMessage());
             LOG.debug("CMMessage instance build from valid SMSMessage instance");
 
-            if (smsMessage.getDynamicFrom() == null || smsMessage.getDynamicFrom().isEmpty()) {
+            if (smsMessage.getFrom() == null || smsMessage.getFrom().isEmpty()) {
                 String df = getConfiguration().getDefaultFrom();
-                cmMessage.setDynamicSender(df);
+                cmMessage.setSender(df);
                 LOG.debug("Dynamic sender is set to default dynamic sender: {}", df);
             }
 
             // Remember, this can be null.
-            cmMessage.setIdAsString(smsMessage.getIdAsString());
+            cmMessage.setIdAsString(smsMessage.getId());
 
             // Unicode and multipart
             cmMessage.setUnicodeAndMultipart(getConfiguration().getDefaultMaxNumberOfParts());

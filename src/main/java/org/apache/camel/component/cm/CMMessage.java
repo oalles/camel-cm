@@ -17,24 +17,24 @@
 package org.apache.camel.component.cm;
 
 /**
- * Valid message to serialized and sent to CM Endpoints. Has to guarantee CM contracts. If the message only uses GSM 7-bit characters, then 160 characters will fit in 1 SMS part, and 153*n characters
- * will fit in n SMS parts for n>1. If the message contains other characters, then only 70 characters will fit in 1 SMS part, and 67*n characters will fit in n SMS parts for n>1. <br>
+ * Valid message to be serialized and sent to CM Endpoints. If the message only uses GSM 7-bit characters, then 160 characters will fit in 1 SMS part, and 153*n characters will fit in n SMS parts for
+ * n>1. If the message contains other characters, then only 70 characters will fit in 1 SMS part, and 67*n characters will fit in n SMS parts for n>1. <br>
  * <br>
  * {@link https://dashboard.onlinesmsgateway.com/docs} <br>
- * {@link http://support.telerivet.com/customer/portal/articles/1957426-multipart- unicode-sms-messages}
+ * {@link http://support.telerivet.com/customer/portal/articles/1957426-multipart-unicode-sms-messages}
  */
-
 public class CMMessage {
-
-    private String phoneNumber;
-    private String message;
 
     /**
      * Restrictions: 1 - 32 alphanumeric characters and reference will not work for demo accounts
      */
-    // TODO: Allow using an ID generator?
+    // TODO: use a ID generator?
     private String idAsString;
-    private String dynamicSender;
+
+    private String phoneNumber;
+    private String message;
+
+    private String sender;
 
     private boolean unicode;
     private int multipart = 1;
@@ -60,12 +60,12 @@ public class CMMessage {
         this.phoneNumber = phoneNumber;
     }
 
-    public String getDynamicSender() {
-        return dynamicSender;
+    public String getSender() {
+        return sender;
     }
 
-    public void setDynamicSender(final String dynamicSender) {
-        this.dynamicSender = dynamicSender;
+    public void setSender(final String sender) {
+        this.sender = sender;
     }
 
     public String getIdAsString() {
@@ -88,6 +88,11 @@ public class CMMessage {
         return multipart > 1;
     }
 
+    /**
+     * For a CMMessage instance
+     *
+     * @param defaultMaxNumberOfParts
+     */
     public void setUnicodeAndMultipart(int defaultMaxNumberOfParts) {
 
         // Set UNICODE and MULTIPART
@@ -137,8 +142,7 @@ public class CMMessage {
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer("CMMessage [phoneNumber=" + phoneNumber + ", message=" + message + " dynamicSender=" + dynamicSender + ", unicode=" + unicode + ", multipart=" + multipart
-                                           + "]");
+        StringBuffer sb = new StringBuffer("CMMessage [phoneNumber=" + phoneNumber + ", message=" + message + " dynamicSender=" + sender + ", unicode=" + unicode + ", multipart=" + multipart + "]");
         if (idAsString != null && !idAsString.isEmpty()) {
             sb.append(", idAsString=" + idAsString);
         }
