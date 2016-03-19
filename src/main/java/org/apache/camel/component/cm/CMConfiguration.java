@@ -25,20 +25,16 @@ import javax.validation.constraints.Size;
 
 import org.apache.camel.spi.UriParam;
 import org.apache.camel.spi.UriParams;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @UriParams
 public class CMConfiguration {
-
-    private static final Logger LOG = LoggerFactory.getLogger(CMConfiguration.class);
 
     @UriParam
     @NotNull
     private UUID productToken;
 
     /**
-     * Required. This is the sender name. The maximum length is 11 characters.
+     * This is the sender name. The maximum length is 11 characters.
      */
     @UriParam
     @NotNull
