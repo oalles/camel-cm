@@ -37,7 +37,7 @@ import org.springframework.util.Assert;
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 // @DisableJmx(false)
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CMConfigurationTests extends AbstractJUnit4SpringContextTests {
+public class CMConfigurationTest extends AbstractJUnit4SpringContextTests {
 
     @Autowired
     private Validator validator;

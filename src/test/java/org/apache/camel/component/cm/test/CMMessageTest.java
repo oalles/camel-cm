@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 // @DisableJmx(false)
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CMMessageTests extends AbstractJUnit4SpringContextTests {
+public class CMMessageTest extends AbstractJUnit4SpringContextTests {
 
     private final PhoneNumberUtil pnu = PhoneNumberUtil.getInstance();
     private String validNumber;

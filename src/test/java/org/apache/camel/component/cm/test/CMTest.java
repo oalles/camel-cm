@@ -69,7 +69,7 @@ import org.springframework.util.Assert;
 // @DisableJmx(false)
 // @MockEndpoints
 // @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class CMTests extends AbstractJUnit4SpringContextTests {
+public class CMTest extends AbstractJUnit4SpringContextTests {
 
     // dependency: camel-spring-javaconfig
 
