@@ -67,7 +67,7 @@ public class CMComponent extends UriEndpointComponent {
             throw t;
         }
 
-        LOG.info("Uri=[{}], path=[{}], parameters=[{}]", new Object[] { URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
+        LOG.info("Uri=[{}], path=[{}], parameters=[{}]", new Object[] {URISupport.sanitizeUri(uri), URISupport.sanitizePath(remaining), parameters });
 
         // Set configuration based on uri parameters
         final CMConfiguration config = new CMConfiguration();
