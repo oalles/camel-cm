@@ -100,7 +100,15 @@ public class SMSMessage {
 
     @Override
     public String toString() {
-        return "SMSMessage [phoneNumber=" + phoneNumber + ", message=" + message + ", dynamicFrom=" + from + ", idAsString=" + id + "]";
+        StringBuffer toS = new StringBuffer("{phoneNumber: " + phoneNumber + ", message: " + message);
+        if (from != null && !from.isEmpty()) {
+            toS.append(", from: " + from);
+        }
+        if (id != null && !id.isEmpty()) {
+            toS.append(", id: " + id);
+        }
+        toS.append(" }");
+        return toS.toString();
     }
 
 }

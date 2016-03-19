@@ -142,10 +142,11 @@ public class CMMessage {
     @Override
     public String toString() {
 
-        StringBuffer sb = new StringBuffer("CMMessage [phoneNumber=" + phoneNumber + ", message=" + message + " dynamicSender=" + sender + ", unicode=" + unicode + ", multipart=" + multipart + "]");
+        StringBuffer sb = new StringBuffer(" {phoneNumber: " + phoneNumber + ", message: " + message + ", sender=" + sender + ", unicode: " + unicode + ", multipart: " + multipart);
         if (idAsString != null && !idAsString.isEmpty()) {
             sb.append(", idAsString=" + idAsString);
         }
+        sb.append(" }");
         return sb.toString();
     }
 
