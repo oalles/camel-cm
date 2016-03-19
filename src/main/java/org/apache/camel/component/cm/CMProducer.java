@@ -102,11 +102,11 @@ public class CMProducer extends DefaultProducer {
             log.debug("Request accepted by CM Host: {}", cmMessage.toString());
         } catch (final NullPointerException e) {
             // Body hast to be an instance of SMSMessage
-            final String m = "Check in message body - Has to be an instance of SMSMessage";
+            final String m = "Check Message body - Has to be an SMSMessage instance";
             log.error(m, e);
             exchange.setException(new InvalidPayloadException(m));
         } catch (final RuntimeException e) {
-            log.error("Cannot send the message ", e);
+            log.error("Message cannot be sent ", e);
             exchange.setException(e);
         }
     }
