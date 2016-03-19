@@ -19,8 +19,6 @@ package org.apache.camel.component.cm.test;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
 import org.apache.camel.CamelContext;
 import org.apache.camel.EndpointInject;
 import org.apache.camel.Produce;
@@ -63,8 +61,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 import org.springframework.util.Assert;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberFormat;
+
 @RunWith(CamelSpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { CamelTestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
+@ContextConfiguration(classes = {
+        CamelTestConfiguration.class }, loader = CamelSpringDelegatingTestContextLoader.class)
 // @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 // @DisableJmx(false)
 // @MockEndpoints
@@ -93,7 +95,8 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void beforeTest() throws Exception {
         mock.reset();
         camelContext.startRoute(CamelTestConfiguration.SIMPLE_ROUTE_ID);
-        validNumber = pnu.format(pnu.getExampleNumber("ES"), PhoneNumberFormat.E164);
+        validNumber = pnu.format(pnu.getExampleNumber("ES"),
+                PhoneNumberFormat.E164);
     }
 
     @After
@@ -171,7 +174,7 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
      * 2. Invalid Payload
      */
 
-    @Test(expected = InvalidPayloadException.class)
+    @Test(expected = RuntimeException.class)
     public void testNullPayload() throws Throwable {
         cmProxy.send(null);
     }
@@ -181,7 +184,8 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testAsPartOfARoute() throws Exception {
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -189,11 +193,15 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testNoAccountFoundForProductTokenException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
-        endpoint.getProducer().setSender(new NoAccountFoundForProductTokenExceptionSender());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer()
+                .setSender(new NoAccountFoundForProductTokenExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -205,11 +213,14 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testCMResponseException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
         endpoint.getProducer().setSender(new CMResponseExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -217,11 +228,15 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testInsufficientBalanceException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
-        endpoint.getProducer().setSender(new InsufficientBalanceExceptionSender());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer()
+                .setSender(new InsufficientBalanceExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -229,11 +244,14 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testInvalidMSISDNException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
         endpoint.getProducer().setSender(new InvalidMSISDNExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -241,11 +259,15 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testInvalidProductTokenException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
-        endpoint.getProducer().setSender(new InvalidProductTokenExceptionSender());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer()
+                .setSender(new InvalidProductTokenExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -253,11 +275,14 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testNoMessageException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
         endpoint.getProducer().setSender(new NoMessageExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -265,11 +290,15 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testNotPhoneNumberFoundException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
-        endpoint.getProducer().setSender(new NotPhoneNumberFoundExceptionSender());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer()
+                .setSender(new NotPhoneNumberFoundExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -277,11 +306,14 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testUnknownErrorException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
         endpoint.getProducer().setSender(new UnknownErrorExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateGSM0338Message(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -289,11 +321,15 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testUnroutableMessageException() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
-        endpoint.getProducer().setSender(new UnroutableMessageExceptionSender());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
+        endpoint.getProducer()
+                .setSender(new UnroutableMessageExceptionSender());
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateUnicodeMessage(), validNumber, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateUnicodeMessage(), validNumber, null);
         cmProxy.send(smsMessage);
     }
 
@@ -301,7 +337,9 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testCMEndpointIsForProducing() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
         endpoint.createConsumer(null);
     }
 
@@ -309,15 +347,19 @@ public class CMTest extends AbstractJUnit4SpringContextTests {
     public void testCMEndpointGetHost() throws Exception {
 
         // Change sending strategy
-        CMEndpoint endpoint = (CMEndpoint) camelContext.getEndpoint(applicationContext.getBean(CamelTestConfiguration.class).getUri());
-        Assert.isTrue(endpoint.getHost().equals(applicationContext.getEnvironment().getRequiredProperty("cm.url")));
+        CMEndpoint endpoint = (CMEndpoint) camelContext
+                .getEndpoint(applicationContext
+                        .getBean(CamelTestConfiguration.class).getUri());
+        Assert.isTrue(endpoint.getHost().equals(applicationContext
+                .getEnvironment().getRequiredProperty("cm.url")));
     }
 
     @Test(expected = InvalidPayloadException.class)
     public void testSendInvalidPayload() throws Exception {
 
         // Body
-        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(), generateGSM0338Message(), null, null);
+        final SMSMessage smsMessage = new SMSMessage(generateIdAsString(),
+                generateGSM0338Message(), null, null);
         cmProxy.send(smsMessage);
     }
 
